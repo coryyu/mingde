@@ -1,0 +1,395 @@
+
+keepalived nginx 双机主主 高可用
+
+nginx 负载均衡 
+
+mysql 主主双机热备
+
+一.准备工作
+
+1. 防火墙
+	查看已经开放的端口：
+		firewall-cmd --list-ports
+	开启端口
+		firewall-cmd --zone=public --add-port=80/tcp --permanent
+	重启防火墙
+		firewall-cmd --reload #重启firewall
+		systemctl stop firewalld.service #停止firewall
+		systemctl disable firewalld.service #禁止firewall开机启动
+		firewall-cmd --state #查看默认防火墙状态（关闭后显示notrunning，开启后显示running）
+	命令含义：
+		–zone #作用域
+		–add-port=80/tcp #添加端口，格式为：端口/通讯协议
+		–permanent #永久生效，没有此参数重启后失效
+源：https://www.linuxidc.com/Linux/2016-12/138979.htm
+2.安装wget
+	yum -y install wget
+重启服务器
+	reboot
+
+二.部署nginx
+	1.安装编译工具及库文件
+		yum -y install gcc gcc-c++ make automake autoconf libtool pcre pcre-devel zlib zlib-devel openssl openssl-devel
+	2.安装nginx
+		cd /usr/local/src/		统一文件下载目录
+		wget http://nginx.org/download/nginx-1.6.2.tar.gz	下载nginx1.6.2
+		tar -zxvf nginx-1.6.2.tar.gz 
+		cd nginx-1.6.2
+		./configure --prefix=/usr/local/nginx --with-http_stub_status_module --with-http_ssl_module
+		make && make install
+	3.配置nginx
+		创建nginx运行使用的用户www
+			/usr/sbin/groupadd www
+			/usr/sbin/useradd -g www www
+		启动nginx
+			/usr/local/nginx/sbin/nginx
+		重载nginx配置
+			/usr/local/nginx/sbin/nginx -s reload
+		默认nginx 访问目录
+			/usr/local/nginx/html
+		配置nginx.conf
+			2 user  www www;
+			3 worker_processes  1;
+
+		   35    upstream myServer {	//负载均衡方案
+		   36        ip_hash;
+
+		   37         server 192.168.88.130:8000 weight=1;	真实id，端口需自行修改，weight:负载均衡的比例
+		   38         server 192.168.88.129:8000 weight=1;	真实id，端口需自行修改
+		   39     }
+		如负载均衡到本机nginx上时，需在配置文件中另外开通接口	server{  listen	8080;}
+	到此nginx配置完成，可通过真实ip 访问
+	
+三.部署 keepalived
+	1.安装keepalived
+		yum -y install keepalived
+		查看keepalived版本
+			keepalived -v
+	2. 修改keepalived的配置文件
+		 vi /etc/keepalived/keepalived.conf
+		第一台服务器：
+		vrrp_script chk_nginx {		#心跳方式  监控
+			 script "/etc/keepalived/nginx_check.sh"    # 检测nginx状态的脚本路径
+			 interval 2                 # 检测时间间隔2s
+			 weight -20                 # 如果脚本的条件成立，权重-20
+		  }
+
+		  vrrp_instance VI_1 {            # VRRP实例名；多实例的情况下，名称必须不一致
+			  state MASTER              # 服务状态；MASTER（工作状态）BACKUP（备用状态）
+			  interface eth0              # VIP绑定网卡 《修改成本机网卡》
+			  virtual_router_id 51      # 虚拟路由ID，主、备节点必须一致；多实例的情况下，ID必须不一致
+			  mcast_src_ip 192.168.1.191  # 本机IP
+			  nopreempt                # 优先级高的设置，解决异常回复后再次抢占的问题
+			  priority 100              # 优先级；取值范围：0~254；MASTER > BACKUP
+			  advert_int 1              # 组播信息发送间隔，主、备节点必须一致，默认1s
+			  authentication {          # 验证信息；主、备节点必须一致
+				  auth_type PASS          # VRRP验证类型，PASS、AH两种
+				  auth_pass 1111          # VRRP验证密码，在同一个vrrp_instance下，主、从必须使用相同的密码才能正常通信
+			  }
+			track_script {           # 将track_script块加入instance配置块
+				  chk_nginx         # 执行Nginx监控的服务
+			  }
+			  virtual_ipaddress {         # 虚拟IP池，主、备节点必须一致，可以定义多个VIP
+				  192.168.1.98          # 虚拟IP
+			  }
+		  }
+
+		  vrrp_instance VI_2 {
+			  state BACKUP
+			  interface eth0
+			  virtual_router_id 52
+			  mcast_src_ip 192.168.1.191
+			  priority 90
+			  advert_int 1
+			  authentication {
+				  auth_type PASS
+				  auth_pass 1111
+			  }
+			  track_script {
+				  chk_nginx
+			  }
+			  virtual_ipaddress {
+				  192.168.1.99
+			  }
+	
+		第二台服务
+			需注意 ip的不同，网卡的不同
+			vrrp_script chk_nginx {
+				 script "/etc/keepalived/nginx_check.sh"
+				 interval 2
+				 weight -20
+			  }
+
+			  vrrp_instance VI_1 {
+				  state BACKUP
+				  interface eth0
+				  virtual_router_id 51
+				  mcast_src_ip 192.168.1.192
+				  priority 90
+				  advert_int 1
+				  authentication {
+					  auth_type PASS
+					  auth_pass 1111
+				  }
+				  track_script {
+					  chk_nginx
+				  }
+				  virtual_ipaddress {
+					  192.168.1.98
+				  }   
+			  }   
+
+			  vrrp_instance VI_2 {
+				  state MASTER
+				  interface eth0
+				  virtual_router_id 52
+				  mcast_src_ip 192.168.1.192
+				  nopreempt
+				  priority 100
+				  advert_int 1
+				  authentication {
+					  auth_type PASS
+					  auth_pass 1111
+				  }
+				  track_script {
+					  chk_nginx
+				  }
+				  virtual_ipaddress {
+					  192.168.1.99
+				  }
+			  }
+	
+	3.编写nginx状态监测脚本
+		/etc/keepalived/nginx_check.sh
+		
+		#!/bin/bash
+		  A=`ps -C nginx –no-header |wc -l`
+		  if [ $A -eq 0 ];then
+				  /usr/local/nginx/sbin/nginx
+				  sleep 2
+				  if [ `ps -C nginx --no-header |wc -l` -eq 0 ];then
+						  killall keepalived
+				  fi
+		  fi
+		编写完 先确认脚本是否可以正常运行
+		
+		保存脚本，赋予执行权限
+			chmod +x /etc/keepalived/nginx_check.sh 
+		
+		开机启动
+			chkconfig keepalived on
+		启动服务
+			service keepalived start
+源：https://www.jianshu.com/p/b147a719f740	
+
+四.安装Mysql
+	1. 卸载已有mysql
+		查看是否已安装mysql：
+		rpm -qa mysql
+		有则卸载：
+		rpm -e --nodeps 文件名称
+		是否存在与mysql相关的文件或目录：
+		whereis mysql
+		是则删除。
+		查看是否存在mariadb：
+		rpm -qa | grep mariadb
+		存在则卸载：
+		rpm -e --nodeps 文件名 //文件名是上一个命令查询结果
+		存在/etc/my.cnf，则需要先删除：
+		rm /etc/my.cnf
+	2. 安装编译mysql需要的依赖包
+		yum install libevent* libtool* autoconf* libstd* ncurse* bison* openssl*
+	3. 安装cmake（mysql5.5之后需要用cmake支持编译安装）
+		查看是否已安装cmake：
+		rpm -qa cmake
+		没有则下载编译安装：
+		cd /usr/local/src
+		wget http://www.cmake.org/files/v2.8/cmake-2.8.12.1.tar.gz
+		tar -xf cmake-2.8.12.1.tar.gz
+		cd cmake-2.8.12.1
+		./configure
+		make
+		make install
+		检查cmake是否安装成功：
+		cmake --version
+	4.下载mysql包并解压（到/usr/local/src目录）
+		cd /usr/local/src
+		wget https://cdn.mysql.com//archives/mysql-5.6/mysql-5.6.38.tar.gz
+		tar -zxvf mysql-5.6.38.tar.gz
+	5. 编译安装（到/usr/local/mysql目录）
+		cd mysql-5.6.38
+		cmake -DCMAKE_INSTALL_PREFIX=/usr/local/mysql -DMYSQL_DATADIR=/usr/local/mysql/data -DSYSCONFDIR=/etc -DWITH_MYISAM_STORAGE_ENGINE=1 -DWITH_INNOBASE_STORAGE_ENGINE=1 -DWITH_MEMORY_STORAGE_ENGINE=1 -DWITH_READLINE=1 -DMYSQL_UNIX_ADDR=/var/lib/mysql/mysql.sock -DMYSQL_TCP_PORT=3306 -DENABLED_LOCAL_INFILE=1 -DWITH_PARTITION_STORAGE_ENGINE=1 -DEXTRA_CHARSETS=all -DDEFAULT_CHARSET=utf8 -DDEFAULT_COLLATION=utf8_general_ci
+		make（此过程需花费大概20-30分钟）
+		make install
+	6. 配置mysql
+		groupadd mysql
+		useradd -M -g mysql -s /sbin/nologin mysql
+		chown -R mysql:mysql /usr/local/mysql
+	7. 初始化配置
+		cd /usr/local/mysql/scripts
+		./mysql_install_db --basedir=/usr/local/mysql --datadir=/usr/local/mysql/data --user=mysql
+	8. 设置mysql为系统服务
+		vi /lib/systemd/system/mysql.service	
+		文件内容：
+		[Unit]
+		Description=mysql
+		After=network.target
+		[Service]
+		Type=forking
+		ExecStart=/usr/local/mysql/support-files/mysql.server start
+		ExecStop=/usr/local/mysql/support-files/mysql.server stop
+		ExecRestart=/usr/local/mysql/support-files/mysql.server restart
+		ExecReload=/usr/local/mysql/support-files/mysql.server reload
+		PrivateTmp=true
+		[Install]
+		WantedBy=multi-user.target
+	9. 设置mysql服务开机自启动
+		systemctl enable mysql.service
+	10. 启动mysql
+		systemctl start mysql.service
+		如有错误，可尝试
+			mkdir /var/lib/mysql
+			chown -R mysql:mysql /var/lib/mysql
+		再次启动
+	11. 登录mysql并设置root密码：
+		/usr/local/mysql/bin/mysql -u root
+		set password=password('123456');
+	12.添加mysql 为系统命令
+		ln -s /usr/local/mysql/bin/mysql /usr/bin
+源：https://www.cnblogs.com/wujuntian/p/8183952.html
+
+五.配置mysql 主主 热备
+	1.创建同步用户
+		同时在主从服务器建立一个连接帐户，该帐户必须授予REPLIATION SLAVE权限。这里因为服务器A和服务器B互为主从，所以都要分别建立一个同步用户。
+		服务器A：
+			mysql> grant replication slave on *.* to 'replicate'@'218.206.70.146' identified by '123456';
+			mysql> flush privileges;
+		服务器B：
+		mysql> grant replication slave on *.* to 'replicate'@'59.151.15.36' identified by '123456';
+		mysql> flush privileges;
+	2.修改配置文件my.cnf
+		服务器A
+		[mysqld]
+			   server-id = 1
+		log-bin=mysql-bin 
+		binlog-do-db = test
+			   binlog-ignore-db = mysql
+		#主－主形式需要多添加的部分
+			   log-slave-updates
+			   sync_binlog = 1
+			   auto_increment_offset = 1
+			   auto_increment_increment = 2
+			   replicate-do-db = test
+			   replicate-ignore-db = mysql,information_schema
+		服务器B
+		[mysqld]
+		server-id = 2
+		log-bin=mysql-bin 
+			   replicate-do-db = test
+			   replicate-ignore-db = mysql,information_schema,performance_schema
+		#主－主形式需要多添加的部分
+			   binlog-do-db = test
+			   binlog-ignore-db = mysql
+			   log-slave-updates
+			   sync_binlog = 1
+			   auto_increment_offset = 2
+			   auto_increment_increment = 2
+			
+		分别重启A服务器和B服务器上的mysql服务
+	3.分别查A服务器和B服务器作为主服务器的状态
+		mysql> show master status\G;
+	4.分别在A服务器和B服务器上用change master to 指定同步位置
+		先停止 slave
+			mysql>stop slave;
+			
+		mysql>change master to
+		>master_host='218.206.70.146',master_user='replicate',master_password='123456',
+		> master_log_file=' mysql-bin.000011 ',master_log_pos=497;
+	
+		后启动slave
+			mysql>start slave;
+	5.分别在A和B服务器上查看从服务器状态
+		mysql>show slave status\G;
+		查看下面两项值均为Yes，即表示设置从服务器成功。
+		Slave_IO_Running: Yes
+		Slave_SQL_Running: Yes
+	完成，可分别对两mysql 增加数据 查看是否同步
+源：https://www.cnblogs.com/fnlingnzb-learner/p/7000898.html
+	
+	
+六.安装php
+	1.检查当前安装的PHP包
+		yum list installed | grep php  
+		如果有安装的PHP包，先删除他们
+		yum remove php.x86_64 php-cli.x86_64
+	2.配置yum源
+		yum install epel-release
+		rpm -ivh http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
+	3.安装PHP5.6.x
+		yum install --enablerepo=remi --enablerepo=remi-php56 php php-opcache php-devel php-mbstring php-mcrypt php-mysqlnd php-phpunit-PHPUnit php-pecl-xdebug php-pecl-xhprof php-gd php-redis
+	4.安装PHP-fpm
+		yum install --enablerepo=remi --enablerepo=remi-php56 php-fpm 
+	5.启动php-fpm
+		service php-fpm start
+	6.Nginx 与 PHP-FPM 集成
+		输入命令查看 PHP-FPM 默认配置：cat /etc/php-fpm.d/www.conf |grep -i 'listen ='
+		返回结果为：listen = 127.0.0.1:9000，表明 PHP-FPM 默认配置的监听端口为 9000，只需修改配置，将 PHP 解析的请求转发到 127.0.0.0:9000 处理即可。
+	7.修改 Nginx 配置
+		vi nginx.cnf
+		server {
+		  listen       80;
+		  root   /usr/share/nginx/html;
+		  server_name  localhost;
+		  #charset koi8-r;
+		  #access_log  /var/log/nginx/log/host.access.log  main;
+		  location / {
+			  index  index.html index.htm;
+		  }
+		  #error_page  404              /404.html;
+		  # redirect server error pages to the static page /50x.html
+		  #
+		  error_page   500 502 503 504  /50x.html;
+		  location = /50x.html {
+			  root   /usr/share/nginx/html;
+		  }
+		  # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+		  #
+		  location ~ \.php$ {
+			  fastcgi_pass   127.0.0.1:9000;
+			  fastcgi_index   index.php;
+			  fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+			  include        fastcgi_params;
+		  }
+		}
+	8.重新加载nginx
+源：https://www.cnblogs.com/shione/p/7492735.html			https://cloud.tencent.com/document/product/213/2125
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
