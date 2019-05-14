@@ -164,10 +164,9 @@ class ClassProductController extends Controller
         $form->switch('is_recommend', '是否推荐');
         $form->switch('is_show', '是否显示');
         $form->switch('is_onoff', '是否可报名');
-        $form->text('image1', 'Image1');
-        $form->image('image1')->move('public/upload/classimage/')->uniqueName();
-        $form->image('image2')->move('public/upload/classimage/')->uniqueName();
-        $form->image('image3')->move('public/upload/classimage/')->uniqueName();
+        $form->image('image1')->move('public/upload/classimage')->uniqueName();
+        $form->image('image2')->move('public/upload/classimage')->uniqueName();
+        $form->image('image3')->move('public/upload/classimage')->uniqueName();
         $form->editor('text_item','特色');
         $form->editor('text_introduce','课程介绍');
         $form->editor('text_arrange','课程安排');
@@ -176,10 +175,24 @@ class ClassProductController extends Controller
             $tools->disableList();
         });
         $form->footer(function ($footer) {
-            // 去掉`提交`按钮
-            $footer->disableSubmit();
-
+            // 去掉`重置`按钮
+            $footer->disableReset();
+            // 去掉`查看`checkbox
+            $footer->disableViewCheck();
+            // 去掉`继续编辑`checkbox
+            $footer->disableEditingCheck();
+            // 去掉`继续创建`checkbox
+            $footer->disableCreatingCheck();
         });
+
+        $form->submitted(function (Form $form) {
+            echo '<pre>';
+            var_dump($form);exit;
+
+
+            $form->text('number', '123123123');
+        });
+
         return $form;
     }
 }
