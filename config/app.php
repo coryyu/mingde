@@ -260,6 +260,10 @@ return [
     'xcx'=>[
         'appid'=>'wx101517298867ba8f',
         'AppSecret'=>'32d35154f369d62d75ed48e3fcb7c146'
+    ],
+    'wxf15f000ddaa0e733'=>[
+        'appid'=>'wxf15f000ddaa0e733',
+        'AppSecret'=>'25f92f178ec71ccfde62450282f141f4'
     ]
 
 

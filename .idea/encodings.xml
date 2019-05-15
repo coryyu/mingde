@@ -2,6 +2,7 @@
 <project version="4">
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/app/Admin/Controllers/ClassProductController.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/Admin/Controllers/ClassreCommendController.php" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/ClassChannel.php" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/ClassProduct.php" charset="UTF-8" />
   </component>

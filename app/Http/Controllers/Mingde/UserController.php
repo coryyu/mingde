@@ -27,12 +27,24 @@ class UserController extends Common
     public function getOpenid(Request $request)
     {
         $code = $request->input('code');
+        $appid = $request->input('appid');
+        $classchannel = DB::table('sch_classchannel')
+            ->where('number',$appid)
+            ->where('is_del',0)
+            ->first();
+        if(empty($code)){
+            return $this->api_json([],500,'code不存在');
+        }
+        if(!$classchannel){
+            return $this->api_json([],500,'appid不存在');
+        }
+
         $c = config('app');
-        $xcx = $c['xcx'];
+        $xcx = $c[$appid];
         $URL = "https://api.weixin.qq.com/sns/jscode2session?appid=".$xcx['appid']."&secret=".$xcx['AppSecret']."&js_code=".$code."&grant_type=authorization_code";
+
         $result = file_get_contents($URL);
         $result = json_decode($result,true);
-
         $user_info = DB::table('sch_user')
             ->select('id','uid','info_k')
             ->where('openid',$result['openid'])

@@ -3,9 +3,32 @@ namespace App\Http\Controllers\Mingde;
 
 use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CommonController extends Controller
 {
+
+
+    public $userinfo;
+
+    function __construct(Request $request) {
+
+        //token 获取用户信息
+
+        $token = $request->input('token');
+
+        $userinfo = DB::table('app_user')
+            ->where('token',$token)
+            ->where('is_del',0)
+            ->first();
+        if($userinfo){
+            $userinfo->official= $userinfo->official_token;
+            $userinfo->official_token= config('app.app_configs.officialtoken').'?token='.$userinfo->official_token;
+            $this->userinfo = $userinfo;
+        }else{
+            echo api_json([],10000,'登录过期');exit;
+        }
+    }
 
     public function api_json( $data = array() , $code = "", $msg = '')
     {

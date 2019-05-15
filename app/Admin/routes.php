@@ -39,6 +39,7 @@ Route::group([
     $router->any('algoitemstandard/upload', 'AlgoItemstandardController@upload');
 
     $router->resource('classproduct', ClassProductController::class);
+    $router->resource('classrecommend', ClassreCommendController::class);
 
 });
 
