@@ -93,4 +93,9 @@ Route::any('v4/officialtoken/index',['uses'=>'V4\OfficialTokenController@Index']
 Route::group(['prefix'=>'mingde'],function(){
     Route::any('user/getuserinfo',['uses'=>'Mingde\UserController@getUserInfo']);//获取用户权限
     Route::any('user/getopenid',['uses'=>'Mingde\UserController@getOpenid']);//获取用户权限
+
+    Route::any('index/indexrecommend',['uses'=>'Mingde\IndexController@indexRecommend']);//首页推荐
+    Route::any('index/indexyanxuerec',['uses'=>'Mingde\IndexController@indexYanxueRec']);//研学推荐
+
+    Route::any('index/indexdetail',['uses'=>'Mingde\IndexController@indexDetail']);//商品详情
 });

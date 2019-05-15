@@ -264,6 +264,10 @@ return [
     'wxf15f000ddaa0e733'=>[
         'appid'=>'wxf15f000ddaa0e733',
         'AppSecret'=>'25f92f178ec71ccfde62450282f141f4'
+    ],
+    'ali'=>[
+        'zhanghao'=>'sjmd_db',
+        'mima'=>'shijimingde2018'
     ]
 
 

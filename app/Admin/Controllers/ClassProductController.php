@@ -12,6 +12,7 @@ use Encore\Admin\Show;
 use App\ClassChannel;
 use App\ClassClothing;
 use Illuminate\Support\Facades\DB;
+use App\ClassGrade;
 
 class ClassProductController extends Controller
 {
@@ -99,7 +100,6 @@ class ClassProductController extends Controller
         $grid->is_show('是否展示')->display(function($is_show) {
             return $is_show==0?'展示':'隐藏';
         });
-        $grid->status('行程状态');
         $grid->status('行程状态')->display(function($status) {
             return $status==0?'进行中':'已结束';
         });
@@ -170,6 +170,13 @@ class ClassProductController extends Controller
         $selectsupport[0]= '总部';
         $selectsupport[1]= '自营';
         $form->select('support','总部/自营')->options($selectsupport);
+        $grade = ClassGrade::get()->toArray();
+        foreach($grade as $k=>$v){
+            $selectgradeup[$v['id']] = $v['name'];
+            $selectgradedo[$v['id']] = $v['name'];
+        }
+        $form->select('gradeup','年级区间上')->options($selectgradeup);
+        $form->select('gradedo','年级区间下')->options($selectgradedo);
         $form->text('city', '城市');
         $form->text('fit', '适应人群');
         $form->text('day', '行程天数');
@@ -192,6 +199,9 @@ class ClassProductController extends Controller
         $form->switch('is_recommend', '是否推荐');
         $form->switch('is_show', '是否显示');
         $form->switch('is_onoff', '是否可报名');
+        $form->switch('is_pay', '是否需要支付');
+        $form->switch('is_sign', '是否需要报名信息');
+        $form->text('school', '学校')->help('多个学校用英文逗号分隔（,）');
         $form->image('image1')->move('public/upload/classimage')->uniqueName();
         $form->image('image2')->move('public/upload/classimage')->uniqueName();
         $form->image('image3')->move('public/upload/classimage')->uniqueName();
