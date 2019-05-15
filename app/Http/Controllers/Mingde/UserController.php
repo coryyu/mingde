@@ -10,7 +10,7 @@ use App\AppSignIn;
 use App\AppMessageIs;
 use Illuminate\Support\Facades\Storage;
 
-class UserController extends Common
+class UserController extends Controller
 {
     /**
      *获取用户信息
@@ -72,6 +72,17 @@ class UserController extends Common
 
             }
         }
+    }
+
+    public function api_json( $data = array() , $code = "", $msg = '')
+    {
+        $code = empty($code)?'Success':$code;
+
+        $backData['return_code'] = $code;
+        $backData['return_msg'] = $msg;
+        $backData['return_info'] = $data;
+
+        return response()->json($backData);
     }
 
 }

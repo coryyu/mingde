@@ -98,4 +98,12 @@ Route::group(['prefix'=>'mingde'],function(){
     Route::any('index/indexyanxuerec',['uses'=>'Mingde\IndexController@indexYanxueRec']);//研学推荐
 
     Route::any('index/indexdetail',['uses'=>'Mingde\IndexController@indexDetail']);//商品详情
+
+    Route::any('order/uploadimg',['uses'=>'Mingde\OrderController@uploadImg']);//上传图片
+    Route::any('order/babylist',['uses'=>'Mingde\OrderController@babyList']);//出行人列表
+    Route::any('order/addorsetbaby',['uses'=>'Mingde\OrderController@addOrSetBaby']);//添加或修改出行人
+    Route::any('order/babydel',['uses'=>'Mingde\OrderController@babyDel']);//删除出行人
+    Route::any('order/addorseguarder',['uses'=>'Mingde\OrderController@addOrSeGuarder']);//添加或修改监护人
+    Route::any('order/guarderlist',['uses'=>'Mingde\OrderController@guarderList']);//监护人列表
+    Route::any('order/guarderdel',['uses'=>'Mingde\OrderController@guarderDel']);//删除监护人
 });

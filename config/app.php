@@ -267,7 +267,9 @@ return [
     ],
     'ali'=>[
         'zhanghao'=>'sjmd_db',
-        'mima'=>'shijimingde2018'
+        'mima'=>'shijimingde2018',
+        'duanxinAccessKey ID'=>'LTAIl0Yx2xJZcvno',
+        'duanxinAccess Key Secret'=>'9DJIGqGIitaMVQCSeQRLxWXEynzR3N'
     ]
 
 

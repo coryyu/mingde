@@ -62,7 +62,7 @@ return [
             'visibility' => 'public',
         ],
 
-        'updoads' => [
+        'uploads' => [
             'driver' => 'local',
             'root' => '/public/imgs/',
 //            'root' => storage_path('app/public'),
@@ -76,6 +76,12 @@ return [
             'url' => env('AWS_URL'),
         ],
         'admin' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public'),
+            'visibility' => 'public',
+            'url' => env('APP_URL').'/uploads',
+        ],
+        'mingde' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
             'visibility' => 'public',

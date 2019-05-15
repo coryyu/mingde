@@ -28,10 +28,14 @@ class ComposerStaticInite1a002d32fc98a787a18b22586c8bbd8
         '538ca81a9a966a6716601ecf48f4eaef' => __DIR__ . '/..' . '/opis/closure/functions.php',
         'f0906e6318348a765ffb6eb24e0d0938' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Foundation/helpers.php',
         '58571171fd5812e6e447dce228f52f4d' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Support/helpers.php',
+        'd767e4fc2dc52fe66584ab8c6684783e' => __DIR__ . '/..' . '/adbario/php-dot-notation/src/helpers.php',
+        '65fec9ebcfbb3cbb4fd0d519687aea01' => __DIR__ . '/..' . '/danielstjules/stringy/src/Create.php',
         '4e8671d7be9056dcd04ddd9e8e15f9cc' => __DIR__ . '/..' . '/encore/laravel-admin/src/helpers.php',
+        'b067bc7112e384b61c701452d53a14a8' => __DIR__ . '/..' . '/mtdowling/jmespath.php/src/JmesPath.php',
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
         '801c31d8ed748cfa537fa45402288c95' => __DIR__ . '/..' . '/psy/psysh/src/functions.php',
         '841780ea2e1d6545ea3a253239d59c05' => __DIR__ . '/..' . '/qiniu/php-sdk/src/Qiniu/functions.php',
+        '66453932bc1be9fb2f910a27947d11b6' => __DIR__ . '/..' . '/alibabacloud/client/src/Functions.php',
         '0d8253363903f0ac7b0978dcde4e28a0' => __DIR__ . '/..' . '/beyondcode/laravel-dump-server/helpers.php',
     );
 
@@ -39,6 +43,10 @@ class ComposerStaticInite1a002d32fc98a787a18b22586c8bbd8
         'p' => 
         array (
             'phpDocumentor\\Reflection\\' => 25,
+        ),
+        'c' => 
+        array (
+            'clagiordano\\weblibs\\configmanager\\' => 34,
         ),
         'Z' => 
         array (
@@ -79,6 +87,7 @@ class ComposerStaticInite1a002d32fc98a787a18b22586c8bbd8
             'Symfony\\Component\\CssSelector\\' => 30,
             'Symfony\\Component\\Console\\' => 26,
             'SuperClosure\\' => 13,
+            'Stringy\\' => 8,
             'Stevenyangecho\\UEditor\\' => 23,
         ),
         'R' => 
@@ -110,6 +119,7 @@ class ComposerStaticInite1a002d32fc98a787a18b22586c8bbd8
         ),
         'M' => 
         array (
+            'Moontoast\\Math\\' => 15,
             'Monolog\\' => 8,
         ),
         'L' => 
@@ -120,6 +130,7 @@ class ComposerStaticInite1a002d32fc98a787a18b22586c8bbd8
         ),
         'J' => 
         array (
+            'JmesPath\\' => 9,
             'JakubOnderka\\PhpConsoleHighlighter\\' => 35,
             'JakubOnderka\\PhpConsoleColor\\' => 29,
             'JPush\\' => 6,
@@ -173,6 +184,8 @@ class ComposerStaticInite1a002d32fc98a787a18b22586c8bbd8
         'A' => 
         array (
             'App\\' => 4,
+            'AlibabaCloud\\Client\\' => 20,
+            'Adbar\\' => 6,
         ),
     );
 
@@ -182,6 +195,10 @@ class ComposerStaticInite1a002d32fc98a787a18b22586c8bbd8
             0 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
             1 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
             2 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
+        ),
+        'clagiordano\\weblibs\\configmanager\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/clagiordano/weblibs-configmanager/src',
         ),
         'Zend\\Diactoros\\' => 
         array (
@@ -283,6 +300,10 @@ class ComposerStaticInite1a002d32fc98a787a18b22586c8bbd8
         array (
             0 => __DIR__ . '/..' . '/jeremeamia/SuperClosure/src',
         ),
+        'Stringy\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/danielstjules/stringy/src',
+        ),
         'Stevenyangecho\\UEditor\\' => 
         array (
             0 => __DIR__ . '/..' . '/stevenyangecho/laravel-u-editor/src',
@@ -335,6 +356,10 @@ class ComposerStaticInite1a002d32fc98a787a18b22586c8bbd8
         array (
             0 => __DIR__ . '/..' . '/nexmo/client/src',
         ),
+        'Moontoast\\Math\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/moontoast/math/src/Moontoast/Math',
+        ),
         'Monolog\\' => 
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
@@ -350,6 +375,10 @@ class ComposerStaticInite1a002d32fc98a787a18b22586c8bbd8
         'Laravel\\Tinker\\' => 
         array (
             0 => __DIR__ . '/..' . '/laravel/tinker/src',
+        ),
+        'JmesPath\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/mtdowling/jmespath.php/src',
         ),
         'JakubOnderka\\PhpConsoleHighlighter\\' => 
         array (
@@ -456,6 +485,14 @@ class ComposerStaticInite1a002d32fc98a787a18b22586c8bbd8
         array (
             0 => __DIR__ . '/../..' . '/app',
         ),
+        'AlibabaCloud\\Client\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/alibabacloud/client/src',
+        ),
+        'Adbar\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/adbario/php-dot-notation/src',
+        ),
     );
 
     public static $fallbackDirsPsr4 = array (
@@ -499,6 +536,86 @@ class ComposerStaticInite1a002d32fc98a787a18b22586c8bbd8
     );
 
     public static $classMap = array (
+        'Adbar\\Dot' => __DIR__ . '/..' . '/adbario/php-dot-notation/src/Dot.php',
+        'AlibabaCloud\\Client\\Accept' => __DIR__ . '/..' . '/alibabacloud/client/src/Accept.php',
+        'AlibabaCloud\\Client\\AlibabaCloud' => __DIR__ . '/..' . '/alibabacloud/client/src/AlibabaCloud.php',
+        'AlibabaCloud\\Client\\Clients\\AccessKeyClient' => __DIR__ . '/..' . '/alibabacloud/client/src/Clients/AccessKeyClient.php',
+        'AlibabaCloud\\Client\\Clients\\BearerTokenClient' => __DIR__ . '/..' . '/alibabacloud/client/src/Clients/BearerTokenClient.php',
+        'AlibabaCloud\\Client\\Clients\\Client' => __DIR__ . '/..' . '/alibabacloud/client/src/Clients/Client.php',
+        'AlibabaCloud\\Client\\Clients\\EcsRamRoleClient' => __DIR__ . '/..' . '/alibabacloud/client/src/Clients/EcsRamRoleClient.php',
+        'AlibabaCloud\\Client\\Clients\\ManageTrait' => __DIR__ . '/..' . '/alibabacloud/client/src/Clients/ManageTrait.php',
+        'AlibabaCloud\\Client\\Clients\\RamRoleArnClient' => __DIR__ . '/..' . '/alibabacloud/client/src/Clients/RamRoleArnClient.php',
+        'AlibabaCloud\\Client\\Clients\\RsaKeyPairClient' => __DIR__ . '/..' . '/alibabacloud/client/src/Clients/RsaKeyPairClient.php',
+        'AlibabaCloud\\Client\\Clients\\StsClient' => __DIR__ . '/..' . '/alibabacloud/client/src/Clients/StsClient.php',
+        'AlibabaCloud\\Client\\Config\\Config' => __DIR__ . '/..' . '/alibabacloud/client/src/Config/Config.php',
+        'AlibabaCloud\\Client\\Credentials\\AccessKeyCredential' => __DIR__ . '/..' . '/alibabacloud/client/src/Credentials/AccessKeyCredential.php',
+        'AlibabaCloud\\Client\\Credentials\\BearerTokenCredential' => __DIR__ . '/..' . '/alibabacloud/client/src/Credentials/BearerTokenCredential.php',
+        'AlibabaCloud\\Client\\Credentials\\CredentialsInterface' => __DIR__ . '/..' . '/alibabacloud/client/src/Credentials/CredentialsInterface.php',
+        'AlibabaCloud\\Client\\Credentials\\EcsRamRoleCredential' => __DIR__ . '/..' . '/alibabacloud/client/src/Credentials/EcsRamRoleCredential.php',
+        'AlibabaCloud\\Client\\Credentials\\Ini\\CreateTrait' => __DIR__ . '/..' . '/alibabacloud/client/src/Credentials/Ini/CreateTrait.php',
+        'AlibabaCloud\\Client\\Credentials\\Ini\\IniCredential' => __DIR__ . '/..' . '/alibabacloud/client/src/Credentials/Ini/IniCredential.php',
+        'AlibabaCloud\\Client\\Credentials\\Ini\\OptionsTrait' => __DIR__ . '/..' . '/alibabacloud/client/src/Credentials/Ini/OptionsTrait.php',
+        'AlibabaCloud\\Client\\Credentials\\Providers\\CredentialsProvider' => __DIR__ . '/..' . '/alibabacloud/client/src/Credentials/Providers/CredentialsProvider.php',
+        'AlibabaCloud\\Client\\Credentials\\Providers\\EcsRamRoleProvider' => __DIR__ . '/..' . '/alibabacloud/client/src/Credentials/Providers/EcsRamRoleProvider.php',
+        'AlibabaCloud\\Client\\Credentials\\Providers\\Provider' => __DIR__ . '/..' . '/alibabacloud/client/src/Credentials/Providers/Provider.php',
+        'AlibabaCloud\\Client\\Credentials\\Providers\\RamRoleArnProvider' => __DIR__ . '/..' . '/alibabacloud/client/src/Credentials/Providers/RamRoleArnProvider.php',
+        'AlibabaCloud\\Client\\Credentials\\Providers\\RsaKeyPairProvider' => __DIR__ . '/..' . '/alibabacloud/client/src/Credentials/Providers/RsaKeyPairProvider.php',
+        'AlibabaCloud\\Client\\Credentials\\RamRoleArnCredential' => __DIR__ . '/..' . '/alibabacloud/client/src/Credentials/RamRoleArnCredential.php',
+        'AlibabaCloud\\Client\\Credentials\\Requests\\AssumeRole' => __DIR__ . '/..' . '/alibabacloud/client/src/Credentials/Requests/AssumeRole.php',
+        'AlibabaCloud\\Client\\Credentials\\Requests\\GenerateSessionAccessKey' => __DIR__ . '/..' . '/alibabacloud/client/src/Credentials/Requests/GenerateSessionAccessKey.php',
+        'AlibabaCloud\\Client\\Credentials\\RsaKeyPairCredential' => __DIR__ . '/..' . '/alibabacloud/client/src/Credentials/RsaKeyPairCredential.php',
+        'AlibabaCloud\\Client\\Credentials\\StsCredential' => __DIR__ . '/..' . '/alibabacloud/client/src/Credentials/StsCredential.php',
+        'AlibabaCloud\\Client\\DefaultAcsClient' => __DIR__ . '/..' . '/alibabacloud/client/src/DefaultAcsClient.php',
+        'AlibabaCloud\\Client\\Encode' => __DIR__ . '/..' . '/alibabacloud/client/src/Encode.php',
+        'AlibabaCloud\\Client\\Exception\\AlibabaCloudException' => __DIR__ . '/..' . '/alibabacloud/client/src/Exception/AlibabaCloudException.php',
+        'AlibabaCloud\\Client\\Exception\\ClientException' => __DIR__ . '/..' . '/alibabacloud/client/src/Exception/ClientException.php',
+        'AlibabaCloud\\Client\\Exception\\ServerException' => __DIR__ . '/..' . '/alibabacloud/client/src/Exception/ServerException.php',
+        'AlibabaCloud\\Client\\Filter\\ApiFilter' => __DIR__ . '/..' . '/alibabacloud/client/src/Filter/ApiFilter.php',
+        'AlibabaCloud\\Client\\Filter\\ClientFilter' => __DIR__ . '/..' . '/alibabacloud/client/src/Filter/ClientFilter.php',
+        'AlibabaCloud\\Client\\Filter\\CredentialFilter' => __DIR__ . '/..' . '/alibabacloud/client/src/Filter/CredentialFilter.php',
+        'AlibabaCloud\\Client\\Filter\\Filter' => __DIR__ . '/..' . '/alibabacloud/client/src/Filter/Filter.php',
+        'AlibabaCloud\\Client\\Filter\\HttpFilter' => __DIR__ . '/..' . '/alibabacloud/client/src/Filter/HttpFilter.php',
+        'AlibabaCloud\\Client\\Log\\LogFormatter' => __DIR__ . '/..' . '/alibabacloud/client/src/Log/LogFormatter.php',
+        'AlibabaCloud\\Client\\Profile\\DefaultProfile' => __DIR__ . '/..' . '/alibabacloud/client/src/Profile/DefaultProfile.php',
+        'AlibabaCloud\\Client\\Regions\\EndpointProvider' => __DIR__ . '/..' . '/alibabacloud/client/src/Regions/EndpointProvider.php',
+        'AlibabaCloud\\Client\\Regions\\LocationService' => __DIR__ . '/..' . '/alibabacloud/client/src/Regions/LocationService.php',
+        'AlibabaCloud\\Client\\Regions\\LocationServiceRequest' => __DIR__ . '/..' . '/alibabacloud/client/src/Regions/LocationServiceRequest.php',
+        'AlibabaCloud\\Client\\Release' => __DIR__ . '/..' . '/alibabacloud/client/src/Release.php',
+        'AlibabaCloud\\Client\\Request\\Request' => __DIR__ . '/..' . '/alibabacloud/client/src/Request/Request.php',
+        'AlibabaCloud\\Client\\Request\\RoaRequest' => __DIR__ . '/..' . '/alibabacloud/client/src/Request/RoaRequest.php',
+        'AlibabaCloud\\Client\\Request\\RpcRequest' => __DIR__ . '/..' . '/alibabacloud/client/src/Request/RpcRequest.php',
+        'AlibabaCloud\\Client\\Request\\Traits\\AcsTrait' => __DIR__ . '/..' . '/alibabacloud/client/src/Request/Traits/AcsTrait.php',
+        'AlibabaCloud\\Client\\Request\\Traits\\ClientTrait' => __DIR__ . '/..' . '/alibabacloud/client/src/Request/Traits/ClientTrait.php',
+        'AlibabaCloud\\Client\\Request\\Traits\\DeprecatedRoaTrait' => __DIR__ . '/..' . '/alibabacloud/client/src/Request/Traits/DeprecatedRoaTrait.php',
+        'AlibabaCloud\\Client\\Request\\Traits\\DeprecatedTrait' => __DIR__ . '/..' . '/alibabacloud/client/src/Request/Traits/DeprecatedTrait.php',
+        'AlibabaCloud\\Client\\Request\\Traits\\MagicTrait' => __DIR__ . '/..' . '/alibabacloud/client/src/Request/Traits/MagicTrait.php',
+        'AlibabaCloud\\Client\\Request\\Traits\\RetryTrait' => __DIR__ . '/..' . '/alibabacloud/client/src/Request/Traits/RetryTrait.php',
+        'AlibabaCloud\\Client\\Request\\UserAgent' => __DIR__ . '/..' . '/alibabacloud/client/src/Request/UserAgent.php',
+        'AlibabaCloud\\Client\\Resolver\\ActionResolverTrait' => __DIR__ . '/..' . '/alibabacloud/client/src/Resolver/ActionResolverTrait.php',
+        'AlibabaCloud\\Client\\Resolver\\ApiResolver' => __DIR__ . '/..' . '/alibabacloud/client/src/Resolver/ApiResolver.php',
+        'AlibabaCloud\\Client\\Resolver\\CallTrait' => __DIR__ . '/..' . '/alibabacloud/client/src/Resolver/CallTrait.php',
+        'AlibabaCloud\\Client\\Resolver\\Roa' => __DIR__ . '/..' . '/alibabacloud/client/src/Resolver/Roa.php',
+        'AlibabaCloud\\Client\\Resolver\\Rpc' => __DIR__ . '/..' . '/alibabacloud/client/src/Resolver/Rpc.php',
+        'AlibabaCloud\\Client\\Resolver\\VersionResolver' => __DIR__ . '/..' . '/alibabacloud/client/src/Resolver/VersionResolver.php',
+        'AlibabaCloud\\Client\\Result\\Result' => __DIR__ . '/..' . '/alibabacloud/client/src/Result/Result.php',
+        'AlibabaCloud\\Client\\SDK' => __DIR__ . '/..' . '/alibabacloud/client/src/SDK.php',
+        'AlibabaCloud\\Client\\Signature\\BearerTokenSignature' => __DIR__ . '/..' . '/alibabacloud/client/src/Signature/BearerTokenSignature.php',
+        'AlibabaCloud\\Client\\Signature\\ShaHmac1Signature' => __DIR__ . '/..' . '/alibabacloud/client/src/Signature/ShaHmac1Signature.php',
+        'AlibabaCloud\\Client\\Signature\\ShaHmac256Signature' => __DIR__ . '/..' . '/alibabacloud/client/src/Signature/ShaHmac256Signature.php',
+        'AlibabaCloud\\Client\\Signature\\ShaHmac256WithRsaSignature' => __DIR__ . '/..' . '/alibabacloud/client/src/Signature/ShaHmac256WithRsaSignature.php',
+        'AlibabaCloud\\Client\\Signature\\SignatureInterface' => __DIR__ . '/..' . '/alibabacloud/client/src/Signature/SignatureInterface.php',
+        'AlibabaCloud\\Client\\Traits\\ArrayAccessTrait' => __DIR__ . '/..' . '/alibabacloud/client/src/Traits/ArrayAccessTrait.php',
+        'AlibabaCloud\\Client\\Traits\\ClientTrait' => __DIR__ . '/..' . '/alibabacloud/client/src/Traits/ClientTrait.php',
+        'AlibabaCloud\\Client\\Traits\\DefaultRegionTrait' => __DIR__ . '/..' . '/alibabacloud/client/src/Traits/DefaultRegionTrait.php',
+        'AlibabaCloud\\Client\\Traits\\EndpointTrait' => __DIR__ . '/..' . '/alibabacloud/client/src/Traits/EndpointTrait.php',
+        'AlibabaCloud\\Client\\Traits\\HasDataTrait' => __DIR__ . '/..' . '/alibabacloud/client/src/Traits/HasDataTrait.php',
+        'AlibabaCloud\\Client\\Traits\\HistoryTrait' => __DIR__ . '/..' . '/alibabacloud/client/src/Traits/HistoryTrait.php',
+        'AlibabaCloud\\Client\\Traits\\HttpTrait' => __DIR__ . '/..' . '/alibabacloud/client/src/Traits/HttpTrait.php',
+        'AlibabaCloud\\Client\\Traits\\LogTrait' => __DIR__ . '/..' . '/alibabacloud/client/src/Traits/LogTrait.php',
+        'AlibabaCloud\\Client\\Traits\\MockTrait' => __DIR__ . '/..' . '/alibabacloud/client/src/Traits/MockTrait.php',
+        'AlibabaCloud\\Client\\Traits\\ObjectAccessTrait' => __DIR__ . '/..' . '/alibabacloud/client/src/Traits/ObjectAccessTrait.php',
+        'AlibabaCloud\\Client\\Traits\\RegionTrait' => __DIR__ . '/..' . '/alibabacloud/client/src/Traits/RegionTrait.php',
+        'AlibabaCloud\\Client\\Traits\\RequestTrait' => __DIR__ . '/..' . '/alibabacloud/client/src/Traits/RequestTrait.php',
         'App\\Admin\\Controllers\\AlgoDetectController' => __DIR__ . '/../..' . '/app/Admin/Controllers/AlgoDetectController.php',
         'App\\Admin\\Controllers\\AlgoItemstandardController' => __DIR__ . '/../..' . '/app/Admin/Controllers/AlgoItemstandardController.php',
         'App\\Admin\\Controllers\\AlgoSysdetectitemController' => __DIR__ . '/../..' . '/app/Admin/Controllers/AlgoSysdetectitemController.php',
@@ -508,6 +625,9 @@ class ComposerStaticInite1a002d32fc98a787a18b22586c8bbd8
         'App\\Admin\\Controllers\\AppuserController' => __DIR__ . '/../..' . '/app/Admin/Controllers/AppuserController.php',
         'App\\Admin\\Controllers\\AuthController' => __DIR__ . '/../..' . '/app/Admin/Controllers/AuthController.php',
         'App\\Admin\\Controllers\\BetweenController' => __DIR__ . '/../..' . '/app/Admin/Controllers/BetweenController.php',
+        'App\\Admin\\Controllers\\ClassChannelController' => __DIR__ . '/../..' . '/app/Admin/Controllers/ClassChannelController.php',
+        'App\\Admin\\Controllers\\ClassProductController' => __DIR__ . '/../..' . '/app/Admin/Controllers/ClassProductController.php',
+        'App\\Admin\\Controllers\\ClassreCommendController' => __DIR__ . '/../..' . '/app/Admin/Controllers/ClassreCommendController.php',
         'App\\Admin\\Controllers\\DoctorController' => __DIR__ . '/../..' . '/app/Admin/Controllers/DoctorController.php',
         'App\\Admin\\Controllers\\ExampleController' => __DIR__ . '/../..' . '/app/Admin/Controllers/ExampleController.php',
         'App\\Admin\\Controllers\\HelpCenterController' => __DIR__ . '/../..' . '/app/Admin/Controllers/HelpCenterController.php',
@@ -540,6 +660,12 @@ class ComposerStaticInite1a002d32fc98a787a18b22586c8bbd8
         'App\\AppVersion' => __DIR__ . '/../..' . '/app/AppVersion.php',
         'App\\Appconfig' => __DIR__ . '/../..' . '/app/Appconfig.php',
         'App\\Between' => __DIR__ . '/../..' . '/app/Between.php',
+        'App\\ClassChannel' => __DIR__ . '/../..' . '/app/ClassChannel.php',
+        'App\\ClassClothing' => __DIR__ . '/../..' . '/app/ClassClothing.php',
+        'App\\ClassGrade' => __DIR__ . '/../..' . '/app/ClassGrade.php',
+        'App\\ClassProduct' => __DIR__ . '/../..' . '/app/ClassProduct.php',
+        'App\\ClassreCommend' => __DIR__ . '/../..' . '/app/ClassreCommend.php',
+        'App\\Console\\Commands\\WashData' => __DIR__ . '/../..' . '/app/Console/Commands/WashData.php',
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
         'App\\Doctor' => __DIR__ . '/../..' . '/app/Doctor.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
@@ -552,6 +678,11 @@ class ComposerStaticInite1a002d32fc98a787a18b22586c8bbd8
         'App\\Http\\Controllers\\Auth\\VerificationController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/VerificationController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Http\\Controllers\\JPushController' => __DIR__ . '/../..' . '/app/Http/Controllers/JPushController.php',
+        'App\\Http\\Controllers\\Mingde\\CommonController' => __DIR__ . '/../..' . '/app/Http/Controllers/Mingde/CommonController.php',
+        'App\\Http\\Controllers\\Mingde\\IndexController' => __DIR__ . '/../..' . '/app/Http/Controllers/Mingde/IndexController.php',
+        'App\\Http\\Controllers\\Mingde\\MessageController' => __DIR__ . '/../..' . '/app/Http/Controllers/Mingde/Message.php',
+        'App\\Http\\Controllers\\Mingde\\OrderController' => __DIR__ . '/../..' . '/app/Http/Controllers/Mingde/Order.php',
+        'App\\Http\\Controllers\\Mingde\\UserController' => __DIR__ . '/../..' . '/app/Http/Controllers/Mingde/UserController.php',
         'App\\Http\\Controllers\\V4\\AddressController' => __DIR__ . '/../..' . '/app/Http/Controllers/V4/AddressController.php',
         'App\\Http\\Controllers\\V4\\AppConfController' => __DIR__ . '/../..' . '/app/Http/Controllers/V4/AppConfController.php',
         'App\\Http\\Controllers\\V4\\CommonController' => __DIR__ . '/../..' . '/app/Http/Controllers/V4/CommonController.php',
@@ -2614,6 +2745,17 @@ class ComposerStaticInite1a002d32fc98a787a18b22586c8bbd8
         'JakubOnderka\\PhpConsoleColor\\ConsoleColor' => __DIR__ . '/..' . '/jakub-onderka/php-console-color/src/ConsoleColor.php',
         'JakubOnderka\\PhpConsoleColor\\InvalidStyleException' => __DIR__ . '/..' . '/jakub-onderka/php-console-color/src/InvalidStyleException.php',
         'JakubOnderka\\PhpConsoleHighlighter\\Highlighter' => __DIR__ . '/..' . '/jakub-onderka/php-console-highlighter/src/Highlighter.php',
+        'JmesPath\\AstRuntime' => __DIR__ . '/..' . '/mtdowling/jmespath.php/src/AstRuntime.php',
+        'JmesPath\\CompilerRuntime' => __DIR__ . '/..' . '/mtdowling/jmespath.php/src/CompilerRuntime.php',
+        'JmesPath\\DebugRuntime' => __DIR__ . '/..' . '/mtdowling/jmespath.php/src/DebugRuntime.php',
+        'JmesPath\\Env' => __DIR__ . '/..' . '/mtdowling/jmespath.php/src/Env.php',
+        'JmesPath\\FnDispatcher' => __DIR__ . '/..' . '/mtdowling/jmespath.php/src/FnDispatcher.php',
+        'JmesPath\\Lexer' => __DIR__ . '/..' . '/mtdowling/jmespath.php/src/Lexer.php',
+        'JmesPath\\Parser' => __DIR__ . '/..' . '/mtdowling/jmespath.php/src/Parser.php',
+        'JmesPath\\SyntaxErrorException' => __DIR__ . '/..' . '/mtdowling/jmespath.php/src/SyntaxErrorException.php',
+        'JmesPath\\TreeCompiler' => __DIR__ . '/..' . '/mtdowling/jmespath.php/src/TreeCompiler.php',
+        'JmesPath\\TreeInterpreter' => __DIR__ . '/..' . '/mtdowling/jmespath.php/src/TreeInterpreter.php',
+        'JmesPath\\Utils' => __DIR__ . '/..' . '/mtdowling/jmespath.php/src/Utils.php',
         'JsonSerializable' => __DIR__ . '/..' . '/nesbot/carbon/src/JsonSerializable.php',
         'Laravel\\Tinker\\ClassAliasAutoloader' => __DIR__ . '/..' . '/laravel/tinker/src/ClassAliasAutoloader.php',
         'Laravel\\Tinker\\Console\\TinkerCommand' => __DIR__ . '/..' . '/laravel/tinker/src/Console/TinkerCommand.php',
@@ -2905,6 +3047,8 @@ class ComposerStaticInite1a002d32fc98a787a18b22586c8bbd8
         'Monolog\\ResettableInterface' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/ResettableInterface.php',
         'Monolog\\SignalHandler' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/SignalHandler.php',
         'Monolog\\Utils' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/Utils.php',
+        'Moontoast\\Math\\BigNumber' => __DIR__ . '/..' . '/moontoast/math/src/Moontoast/Math/BigNumber.php',
+        'Moontoast\\Math\\Exception\\ArithmeticException' => __DIR__ . '/..' . '/moontoast/math/src/Moontoast/Math/Exception/ArithmeticException.php',
         'Nexmo\\Account\\Balance' => __DIR__ . '/..' . '/nexmo/client/src/Account/Balance.php',
         'Nexmo\\Account\\Client' => __DIR__ . '/..' . '/nexmo/client/src/Account/Client.php',
         'Nexmo\\Account\\PrefixPrice' => __DIR__ . '/..' . '/nexmo/client/src/Account/PrefixPrice.php',
@@ -4344,6 +4488,8 @@ class ComposerStaticInite1a002d32fc98a787a18b22586c8bbd8
         'Stevenyangecho\\UEditor\\Uploader\\UploadFile' => __DIR__ . '/..' . '/stevenyangecho/laravel-u-editor/src/Uploader/UploadFile.php',
         'Stevenyangecho\\UEditor\\Uploader\\UploadQiniu' => __DIR__ . '/..' . '/stevenyangecho/laravel-u-editor/src/Uploader/UploadQiniu.php',
         'Stevenyangecho\\UEditor\\Uploader\\UploadScrawl' => __DIR__ . '/..' . '/stevenyangecho/laravel-u-editor/src/Uploader/UploadScrawl.php',
+        'Stringy\\StaticStringy' => __DIR__ . '/..' . '/danielstjules/stringy/src/StaticStringy.php',
+        'Stringy\\Stringy' => __DIR__ . '/..' . '/danielstjules/stringy/src/Stringy.php',
         'SuperClosure\\Analyzer\\AstAnalyzer' => __DIR__ . '/..' . '/jeremeamia/SuperClosure/src/Analyzer/AstAnalyzer.php',
         'SuperClosure\\Analyzer\\ClosureAnalyzer' => __DIR__ . '/..' . '/jeremeamia/SuperClosure/src/Analyzer/ClosureAnalyzer.php',
         'SuperClosure\\Analyzer\\Token' => __DIR__ . '/..' . '/jeremeamia/SuperClosure/src/Analyzer/Token.php',
@@ -5048,6 +5194,7 @@ class ComposerStaticInite1a002d32fc98a787a18b22586c8bbd8
         'Zend\\Diactoros\\Stream' => __DIR__ . '/..' . '/zendframework/zend-diactoros/src/Stream.php',
         'Zend\\Diactoros\\UploadedFile' => __DIR__ . '/..' . '/zendframework/zend-diactoros/src/UploadedFile.php',
         'Zend\\Diactoros\\Uri' => __DIR__ . '/..' . '/zendframework/zend-diactoros/src/Uri.php',
+        'clagiordano\\weblibs\\configmanager\\ConfigManager' => __DIR__ . '/..' . '/clagiordano/weblibs-configmanager/src/ConfigManager.php',
         'phpDocumentor\\Reflection\\DocBlock' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlock.php',
         'phpDocumentor\\Reflection\\DocBlockFactory' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlockFactory.php',
         'phpDocumentor\\Reflection\\DocBlockFactoryInterface' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlockFactoryInterface.php',
