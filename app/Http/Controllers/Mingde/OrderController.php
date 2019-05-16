@@ -20,7 +20,7 @@ class OrderController extends CommonController
         $proid = $request->input('proid');
         $trip = $request->input('trip');//出行人id
         $guarder = $request->input('guarder');//监护人id
-        $ip = $request->input('ip');//监护人id
+        $ip = '47.104.158.214.';//监护人id
         //商品信息
         $pros = ClassProduct::where('sch_classproduct.id',$proid)
             ->select('sch_classproduct.*','admin_users.username','admin_users.id as userid')
@@ -70,47 +70,112 @@ class OrderController extends CommonController
             return api_json([],500,'DB错误');
 //            return back()->withErrors($exception->getMessage())->withInput();
         }
+        if($pros->is_pay ==0) {
 
-        //支付预订单
-        $channel = DB::table('sch_classchannel')
-            ->where('id',$pros->channel)
+            //支付预订单
+            $channel = DB::table('sch_classchannel')
+                ->where('id', $pros->channel)
+                ->first();
+            $order['appid'] = $channel->appid;//应用ID
+            $order['body'] = '实际明德';//商品描述
+            $order['mch_id'] = $channel->mchid;//商户号
+            $order['nonce_str'] = md5('pzzk2018');//随机字符串
+            $order['notify_url'] = $channel->notify_url;//通知地址
+            $order['openid'] = $this->userinfo->openid;//通知地址
+            $order['out_trade_no'] = $data['orders'];//商户订单号
+            $order['spbill_create_ip'] = $ip;//终端IP
+            $order['total_fee'] = 3 * 100;//总金额
+            $order['total_fee'] = $data['pay'] * 100;//总金额
+            $order['trade_type'] = 'JSAPI';//交易类型
+            $order['sign'] = $this->sign_do($order, $channel->appsecret);//签名
+            $Submission = $this->arrayToXml($order);
+            $dataxml = $this->curlMet($channel->unif, 'post', $Submission);
+            var_dump($dataxml);exit;
+            $objectxml = (array)simplexml_load_string($dataxml, 'SimpleXMLElement', LIBXML_NOCDATA);
+            if ($objectxml['return_code'] == 'SUCCESS') {
+                if ($objectxml['result_code'] == 'SUCCESS') {//成功
+                    //组装qpp数据
+                    $order_app['appid'] = $channel->appid;
+                    $order_app['partnerid'] = $channel->mchid;
+                    $order_app['prepayid'] = $objectxml['prepay_id'];
+                    $order_app['package'] = 'Sign=WXPay';
+                    $order_app['nonceStr'] = $order['nonce_str'];
+                    $order_app['timeStamp'] = time();
+                    $order_app['paySign'] = $this->sign_do($order_app, $channel->appsecret);//签名
+                    $order_app['order'] = $data['orders'];
+                    return api_json($order_app, 200, '成功');
+
+                } else {
+                    return api_json([], 500, '支付失败');
+                }
+            } else {
+                return api_json([], 500, '支付失败');
+            }
+        }else{//不需要支付
+            return api_json(['orderid'=>$orderid], 200, '成功');
+        }
+    }
+    /**
+     *确定订单、支付成功
+     */
+    public function isOrderOk(Request $request)
+    {
+        $orderid=$request->input('oid');
+        $order_info = DB::table('sch_classorder')
+            ->where('orders',$orderid)
             ->first();
-        $order['appid'] =$channel->appid;//应用ID
-        $order['body'] = '实际明德';//商品描述
-        $order['mch_id'] = $channel->mchid;//商户号
-        $order['nonce_str'] = md5('pzzk2018');//随机字符串
-        $order['notify_url'] = $channel->notify_url;//通知地址
-        $order['out_trade_no'] = $data['orders'];//商户订单号
-        $order['spbill_create_ip'] = $ip;//终端IP
-        $order['total_fee'] = $data['pay']*100;//总金额
-        $order['trade_type'] = 'JSAPI';//交易类型
-        $order['sign'] = $this->sign_do($order,$channel->appsecret);//签名
-        $Submission = $this->arrayToXml($order);
-        $dataxml = $this->curlMet($channel->unif,'post',$Submission);
-        var_dump($dataxml);exit;
-        $objectxml = (array)simplexml_load_string($dataxml, 'SimpleXMLElement', LIBXML_NOCDATA);
-        print_r($objectxml);exit;
-        if($objectxml['return_code'] == 'SUCCESS')  {
-            if($objectxml['result_code'] == 'SUCCESS') {//成功
-                //组装qpp数据
-                $order_app['appid'] = $channel->appid;
-                $order_app['partnerid'] = $channel->mchid;
-                $order_app['prepayid'] = $objectxml['prepay_id'];
-                $order_app['package'] = 'Sign=WXPay';
-                $order_app['nonceStr'] = $order['nonce_str'];
-                $order_app['timeStamp'] = time();
-                $order_app['paySign'] =$this->sign_do($order_app,$channel->appsecret);//签名
-                $order_app['order']=$data['orders'];
-                return api_json($order_app,200,'成功');
-
+        $channel = DB::table('sch_classchannel')
+            ->where('id', $order_info->channel)
+            ->first();
+        if($order_info){
+            if($order_info->pay_status == 2){//已支付成功
+                return api_json([],200,'支付成功');
             }else{
-                return api_json([],500,'支付失败');
+                //查询订单支付状态
+                $order['appid'] = $channel->appid;
+                $order['mch_id'] = $channel->mchid;
+                $order['out_trade_no'] = $order_info->orders;
+                $order['nonce_str'] = md5('pzzk2018');//随机字符串
+                $order['sign'] =$this->sign_do($order,$channel->appsecret);//签名
+
+                $Submission = $this->arrayToXml($order);
+                $dataxml = $this->curlMet(config('app.wx_configs.orderquery'),'post',$Submission);
+                $objectxml = (array)simplexml_load_string($dataxml, 'SimpleXMLElement', LIBXML_NOCDATA);
+                if($objectxml['return_code'] == 'SUCCESS' && $objectxml['result_code'] == 'SUCCESS') {
+                    if ($objectxml['trade_state'] == 'SUCCESS') {//成功
+                        $sign = $objectxml['sign'];
+                        unset($objectxml['sign']);
+                        if($this->sign_do($objectxml,$channel->appsecret) == $sign) {//验证签名
+//                            Log::info('Showing user profile for user: '.$id);
+
+                            DB::beginTransaction();
+                            try {
+                                //成功修改订单状态
+
+
+
+                                //提交
+                                DB::commit();
+                                return api_json([],200,'支付成功');
+                            }catch(\Exception $exception) {
+                                //事务回滚
+                                DB::rollBack();
+                                return api_json([],500,'失败');
+                                //            return back()->withErrors($exception->getMessage())->withInput();
+                            }
+                        }else{
+                            return api_json([],500,'验证签名失败');
+                        }
+                    }else{//支付失败
+                        return api_json([],500,'支付失败');
+                    }
+                }else{//借口信息 错误
+                    return api_json([],500,'支付失败');
+                }
             }
         }else{
-            return api_json([],500,'支付失败');
+            return api_json([],500,'该订单不存在');
         }
-
-
     }
     /**
      *签名
