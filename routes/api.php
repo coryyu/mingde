@@ -106,4 +106,5 @@ Route::group(['prefix'=>'mingde'],function(){
     Route::any('order/addorseguarder',['uses'=>'Mingde\OrderController@addOrSeGuarder']);//添加或修改监护人
     Route::any('order/guarderlist',['uses'=>'Mingde\OrderController@guarderList']);//监护人列表
     Route::any('order/guarderdel',['uses'=>'Mingde\OrderController@guarderDel']);//删除监护人
+    Route::any('order/addorder',['uses'=>'Mingde\OrderController@addOrder']);//删除监护人
 });

@@ -14,17 +14,33 @@ class IndexController extends CommonController
      */
     public function indexRecommend()
     {
-
-        $pro = DB::table('sch_classproduct as pro')
-            ->select('pro.id','pro.title','pro.image1')
-            ->leftJoin('sch_classrecommend','sch_classrecommend.number','=','pro.number')
-            ->orderBy('pro.sort','desc')
+        //最上方两个推荐
+        $pro = DB::table('sch_classrecommend')
+            ->select('sch_classproduct.id','sch_classproduct.title','sch_classproduct.image1')
+            ->leftJoin('sch_classproduct','sch_classproduct.number','=','sch_classrecommend.number')
+            ->where('sch_classproduct.is_del',0)
+            ->orderBy('sch_classrecommend.sort','desc')
             ->limit(2)
             ->get();
         foreach($pro as $k=>$v){
             $pro[$k]->image1 = config('app.app_configs.loadhost').$v->image1;
         }
-        return $this->api_json($pro,200,'成功');
+
+        //研学推荐
+        $yanxue = DB::table('sch_classyanxurecommend')
+            ->select('sch_classproduct.id','sch_classproduct.title','sch_classproduct.image1')
+            ->leftJoin('sch_classproduct','sch_classproduct.number','=','sch_classproduct.number')
+            ->where('sch_classproduct.is_del',0)
+            ->orderBy('sch_classyanxurecommend.sort','desc')
+            ->limit(6)
+            ->get();
+        foreach($yanxue as $k=>$v){
+            $yanxue[$k]->image1 = config('app.app_configs.loadhost').$v->image1;
+        }
+        $res['tuijian'] = $pro;
+        $res['yanxue'] = $yanxue;
+
+        return $this->api_json($res,200,'成功');
     }
     /**
      *研学推荐

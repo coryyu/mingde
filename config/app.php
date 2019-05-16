@@ -248,7 +248,7 @@ return [
         'mchid'=>'1488768922',
         'unifiedorder'=>'https://api.mch.weixin.qq.com/pay/unifiedorder',
         'orderquery'=>'https://api.mch.weixin.qq.com/pay/orderquery',
-        'notify_url'=>'http://apiserver.yanxuxu.cn/api/v4/wx/notifyurl'
+        'notify_url'=>'http://class.puzezhongkang.com/api/mingde/wx/notifyurl'
     ],
     /**
      *极光

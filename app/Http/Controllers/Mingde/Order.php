@@ -4,12 +4,147 @@ namespace App\Http\Controllers\Mingde;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
-use App\ClassProduct;
 use Illuminate\Support\Facades\Storage;
+
+use App\ClassProduct;
+use App\ClassTrip;
+use App\ClassGuarder;
 
 class OrderController extends CommonController
 {
+    /**
+     *添加订单
+     */
+    public function addOrder(Request $request){
 
+        $proid = $request->input('proid');
+        $trip = $request->input('trip');//出行人id
+        $guarder = $request->input('guarder');//监护人id
+        $ip = $request->input('ip');//监护人id
+        //商品信息
+        $pros = ClassProduct::where('sch_classproduct.id',$proid)
+            ->select('sch_classproduct.*','admin_users.username','admin_users.id as userid')
+            ->leftJoin('admin_users','admin_users.id','=','sch_classproduct.sale')
+            ->first();
+        if(!$pros){
+            return $this->api_json([],500,'商品信息错误');
+        }
+        //出行人信息
+        $trips = ClassTrip::where('id',$trip)->first();
+        if(!$trips){
+            return $this->api_json([],500,'出行人信息错误');
+        }
+        //监护人信息
+        $guarders = ClassGuarder::where('id',$guarder)->first();
+        if(!$guarders){
+            return $this->api_json([],500,'监护人信息错误');
+        }
+
+        //订单信息
+        $data['orders'] = 'Proojk'.$pros->id.date("w").time();
+        $data['title'] = $pros->title;
+        $data['xueshengname'] = $trips->name;
+        $data['school'] = $trips->school;
+        $data['grade'] = $trips->grade;
+        $data['class'] = $trips->class;
+        $data['pay_status'] = 0;//0未支付
+        $data['pay'] = $pros->price;
+        $data['channel'] = $pros->channel;//走账公司
+        $data['sale'] = $pros->username;
+        $data['sale_id'] = $pros->userid;
+        $data['created_at'] = today_time();
+        $data['updated_at'] = today_time();
+        $data['card1'] = $trips->card1;
+        $data['card2'] = $trips->card2;
+        $data['guarder'] = $guarders->id;
+        $data['trip'] = $trips->id;
+
+        DB::beginTransaction();//开启事务
+        try {
+            $orderid= DB::table('sch_classorder')
+                ->insertGetId($data);
+            DB::commit();
+        }catch(\Exception $exception) {
+            //事务回滚
+            DB::rollBack();
+            return api_json([],500,'DB错误');
+//            return back()->withErrors($exception->getMessage())->withInput();
+        }
+
+        //支付预订单
+        $channel = DB::table('sch_classchannel')
+            ->where('id',$pros->channel)
+            ->first();
+        $order['appid'] =$channel->appid;//应用ID
+        $order['body'] = '实际明德';//商品描述
+        $order['mch_id'] = $channel->mchid;//商户号
+        $order['nonce_str'] = md5('pzzk2018');//随机字符串
+        $order['notify_url'] = $channel->notify_url;//通知地址
+        $order['out_trade_no'] = $data['orders'];//商户订单号
+        $order['spbill_create_ip'] = $ip;//终端IP
+        $order['total_fee'] = $data['pay']*100;//总金额
+        $order['trade_type'] = 'JSAPI';//交易类型
+        $order['sign'] = $this->sign_do($order,$channel->appsecret);//签名
+        $Submission = $this->arrayToXml($order);
+        $dataxml = $this->curlMet($channel->unif,'post',$Submission);
+        var_dump($dataxml);exit;
+        $objectxml = (array)simplexml_load_string($dataxml, 'SimpleXMLElement', LIBXML_NOCDATA);
+        print_r($objectxml);exit;
+        if($objectxml['return_code'] == 'SUCCESS')  {
+            if($objectxml['result_code'] == 'SUCCESS') {//成功
+                //组装qpp数据
+                $order_app['appid'] = $channel->appid;
+                $order_app['partnerid'] = $channel->mchid;
+                $order_app['prepayid'] = $objectxml['prepay_id'];
+                $order_app['package'] = 'Sign=WXPay';
+                $order_app['nonceStr'] = $order['nonce_str'];
+                $order_app['timeStamp'] = time();
+                $order_app['paySign'] =$this->sign_do($order_app,$channel->appsecret);//签名
+                $order_app['order']=$data['orders'];
+                return api_json($order_app,200,'成功');
+
+            }else{
+                return api_json([],500,'支付失败');
+            }
+        }else{
+            return api_json([],500,'支付失败');
+        }
+
+
+    }
+    /**
+     *签名
+     */
+    public function sign_do($arr,$appsecret)
+    {
+        ksort($arr);//排序
+        $str = http_build_query($arr)."&key=".$appsecret;
+        $str = $this->arrToUrl($str);
+        return  strtoupper(md5($str));
+    }
+    //URL解码为中文
+    public function arrToUrl($str)
+    {
+        return urldecode($str);
+    }
+    /**
+     *转xml 格式
+     */
+    function arrayToXml($arr)
+    {
+        $xml = "<xml>";
+        foreach ($arr as $key=>$val)
+        {
+            $xml.="<".$key.">".$val."</".$key.">";
+//            if (is_numeric($val)){
+//                $xml.="<".$key.">".$val."</".$key.">";
+//            }else{
+//                $xml.="<".$key."><![CDATA[".$val."]]></".$key.">";
+//            }
+        }
+        $xml.="</xml>";
+        return $xml;
+    }
     /**
      *添加/修改出行人
      **/
