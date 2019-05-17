@@ -66,7 +66,7 @@ class IndexController extends CommonController
     {
         $id = $request->input('id');
 
-        $pro = ClassProduct::select('title','title_fit','price','is_onoff','image1','image2','image3','text_item','text_introduce','text_arrange','fit','day','start_time','city','clothing','gradeup','gradedo','is_pay','is_sign','school')
+        $pro = ClassProduct::select('title','title_fit','price','price','is_onoff','image1','image2','image3','text_item','text_introduce','text_arrange','fit','day','start_time','city','clothing','gradeup','gradedo','is_pay','is_sign','school')
             ->where('id',$id)->first();
         $grade = DB::table('sch_classgrade')
             ->whereBetween('id', [$pro->gradeup, $pro->gradedo])
@@ -75,9 +75,11 @@ class IndexController extends CommonController
             $grades[]=$v->name;
         }
         $pro->grade = $grades;
-        $pro->image1 = config('app.app_configs.loadhost').$pro->image1;
-        $pro->image2 = config('app.app_configs.loadhost').$pro->image2;
-        $pro->image3 = config('app.app_configs.loadhost').$pro->image3;
+        $image['image1'] = config('app.app_configs.loadhost').$pro->image1;
+        $image['image2'] = config('app.app_configs.loadhost').$pro->image2;
+        $image['image3'] = config('app.app_configs.loadhost').$pro->image3;
+        $pro->imagemini = config('app.app_configs.loadhost').$pro->image1;
+        $pro['image'] = $image;
         $school = explode(',',$pro->school);
         $pro->school = $school;
         return $this->api_json($pro->toarray(),200,'成功');

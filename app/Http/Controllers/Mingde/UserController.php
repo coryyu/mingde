@@ -38,39 +38,34 @@ class UserController extends Controller
         if(!$classchannel){
             return $this->api_json([],500,'appid不存在');
         }
-
-        $c = config('app');
-        $xcx = $c[$appid];
-        $URL = "https://api.weixin.qq.com/sns/jscode2session?appid=".$xcx['appid']."&secret=".$xcx['AppSecret']."&js_code=".$code."&grant_type=authorization_code";
-
+        $URL = "https://api.weixin.qq.com/sns/jscode2session?appid=".$classchannel->appid."&secret=".$classchannel->appsecret."&js_code=".$code."&grant_type=authorization_code";
         $result = file_get_contents($URL);
         $result = json_decode($result,true);
-        $user_info = DB::table('sch_user')
-            ->select('id','uid','info_k')
-            ->where('openid',$result['openid'])
-            ->first();
-        if(!empty($user_info)){//存在
-            $token = md5($result['openid'] . time() . "yxx");
-            DB::table('xcx_user')->where('id',$user_info->id)->update(['token'=>$token]);
-            if($user_info->uid==-1){
-                return $this->api_json(['token'=>$token,'key'=>$result['session_key'],'info_k'=>$user_info->info_k,'uid'=>-1],'200','');
-            }else{
-                return $this->api_json(['token'=>$token,'key'=>$result['session_key'],'info_k'=>$user_info->info_k,'uid'=>$user_info->uid],'200','');
+        if(!empty($result['openid'])) {
+            $user_info = DB::table('sch_user')
+                ->where('openid', $result['openid'])
+                ->first();
+            if (!empty($user_info)) {//存在
+                $token = md5($result['openid'] . time() . "yxx");
+                DB::table('sch_user')->where('id', $user_info->id)->update(['token' => $token]);
+                return $this->api_json(['token' => $token], 200, '成功');
+            } else {//需同步 已有用户
+                $token = md5($result['openid'] . time() . "yxx");
+                $xcx_data['openid'] = $result['openid'];
+                $xcx_data['created_at'] = date('Y-m-d H:i:s', time());
+                $xcx_data['updated_at'] = $xcx_data['created_at'];
+                $xcx_data['session_key'] = $result['session_key'];
+                $xcx_data['is_del'] = 0;
+                $bool = DB::table('sch_user')
+                    ->insert($xcx_data);
+                if ($bool) {
+                    return $this->api_json(['token' => $token], 200, '成功');
+                } else {
+                    return $this->api_json(['token' => $token], 500, '失败');
+                }
             }
-        }else{//需同步 已有用户
-
-            $token = md5($result['openid'] . time() . "yxx");
-            $xcx_data['openid'] = $result['openid'];
-            $xcx_data['sessionkey'] = $result['session_key'];
-            $xcx_data['create_time'] = date('Y-m-d H:i:s',time());
-            $xcx_data['token'] = $token;
-            $bool=DB::table('xcx_user')
-                ->insert($xcx_data);
-            if($bool){
-                return $this->api_json(['token'=>$token,'key'=>$result['session_key'],'info_k'=>1,'uid'=>-1],'200','');
-            }else{
-
-            }
+        }else{
+            return $this->api_json([], 500, $result);
         }
     }
 

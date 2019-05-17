@@ -20,7 +20,7 @@ class OrderController extends CommonController
         $proid = $request->input('proid');
         $trip = $request->input('trip');//出行人id
         $guarder = $request->input('guarder');//监护人id
-        $ip = '47.104.158.214.';//监护人id
+        $ip = '47.104.158.214';//监护人id
         //商品信息
         $pros = ClassProduct::where('sch_classproduct.id',$proid)
             ->select('sch_classproduct.*','admin_users.username','admin_users.id as userid')
@@ -29,24 +29,26 @@ class OrderController extends CommonController
         if(!$pros){
             return $this->api_json([],500,'商品信息错误');
         }
-        //出行人信息
-        $trips = ClassTrip::where('id',$trip)->first();
-        if(!$trips){
-            return $this->api_json([],500,'出行人信息错误');
+        if($pros->is_sign == 0){//需要报名信息
+            //出行人信息
+            $trips = ClassTrip::where('id',$trip)->first();
+            if(!$trips){
+                return $this->api_json([],500,'出行人信息错误');
+            }
+            //监护人信息
+            $guarders = ClassGuarder::where('id',$guarder)->first();
+            if(!$guarders){
+                return $this->api_json([],500,'监护人信息错误');
+            }
         }
-        //监护人信息
-        $guarders = ClassGuarder::where('id',$guarder)->first();
-        if(!$guarders){
-            return $this->api_json([],500,'监护人信息错误');
-        }
-
+        
         //订单信息
         $data['orders'] = 'Proojk'.$pros->id.date("w").time();
         $data['title'] = $pros->title;
-        $data['xueshengname'] = $trips->name;
-        $data['school'] = $trips->school;
-        $data['grade'] = $trips->grade;
-        $data['class'] = $trips->class;
+        $data['xueshengname'] = empty($trips->name)?'':$trips->name;
+        $data['school'] = empty($trips->school)?'':$trips->school;
+        $data['grade'] = empty($trips->grade)?'':$trips->grade;
+        $data['class'] = empty($trips->class)?'':$trips->class;
         $data['pay_status'] = 0;//0未支付
         $data['pay'] = $pros->price;
         $data['channel'] = $pros->channel;//走账公司
@@ -54,10 +56,10 @@ class OrderController extends CommonController
         $data['sale_id'] = $pros->userid;
         $data['created_at'] = today_time();
         $data['updated_at'] = today_time();
-        $data['card1'] = $trips->card1;
-        $data['card2'] = $trips->card2;
-        $data['guarder'] = $guarders->id;
-        $data['trip'] = $trips->id;
+        $data['card1'] = empty($trips->card1)?'':$trips->card1;
+        $data['card2'] = empty($trips->card2)?'':$trips->card2;
+        $data['guarder'] = empty($guarders->id)?'':$guarders->id;
+        $data['trip'] = empty($trips->id)?'':$trips->id;
 
         DB::beginTransaction();//开启事务
         try {
@@ -68,8 +70,9 @@ class OrderController extends CommonController
             //事务回滚
             DB::rollBack();
             return api_json([],500,'DB错误');
-//            return back()->withErrors($exception->getMessage())->withInput();
+            //            return back()->withErrors($exception->getMessage())->withInput();
         }
+
         if($pros->is_pay ==0) {
 
             //支付预订单
@@ -77,20 +80,19 @@ class OrderController extends CommonController
                 ->where('id', $pros->channel)
                 ->first();
             $order['appid'] = $channel->appid;//应用ID
-            $order['body'] = '实际明德';//商品描述
             $order['mch_id'] = $channel->mchid;//商户号
             $order['nonce_str'] = md5('pzzk2018');//随机字符串
-            $order['notify_url'] = $channel->notify_url;//通知地址
-            $order['openid'] = $this->userinfo->openid;//通知地址
+            $order['body'] = 'pzzk';//商品描述
             $order['out_trade_no'] = $data['orders'];//商户订单号
-            $order['spbill_create_ip'] = $ip;//终端IP
             $order['total_fee'] = 3 * 100;//总金额
-            $order['total_fee'] = $data['pay'] * 100;//总金额
+            $order['spbill_create_ip'] = $ip;//终端IP
+            $order['notify_url'] = $channel->notify_url;//通知地址
             $order['trade_type'] = 'JSAPI';//交易类型
+            $order['openid'] = $this->userinfo->openid;//通知地址
+            //            $order['total_fee'] = $data['pay'] * 100;//总金额
             $order['sign'] = $this->sign_do($order, $channel->appsecret);//签名
             $Submission = $this->arrayToXml($order);
             $dataxml = $this->curlMet($channel->unif, 'post', $Submission);
-            var_dump($dataxml);exit;
             $objectxml = (array)simplexml_load_string($dataxml, 'SimpleXMLElement', LIBXML_NOCDATA);
             if ($objectxml['return_code'] == 'SUCCESS') {
                 if ($objectxml['result_code'] == 'SUCCESS') {//成功
@@ -114,6 +116,10 @@ class OrderController extends CommonController
         }else{//不需要支付
             return api_json(['orderid'=>$orderid], 200, '成功');
         }
+
+
+
+
     }
     /**
      *确定订单、支付成功
