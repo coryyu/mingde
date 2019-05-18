@@ -20,6 +20,8 @@ class OrderController extends CommonController
         $proid = $request->input('proid');
         $trip = $request->input('trip');//出行人id
         $guarder = $request->input('guarder');//监护人id
+        $invoice = $request->input('invoice');//0:不需要发票，1需要发票
+            $email = $request->input('email');
         $ip = '47.104.158.214';//监护人id
         //商品信息
         $pros = ClassProduct::where('sch_classproduct.id',$proid)
@@ -43,6 +45,7 @@ class OrderController extends CommonController
         }
         
         //订单信息
+        $data['userid'] = $this->userinfo->id;
         $data['orders'] = 'Proojk'.$pros->id.date("w").time();
         $data['title'] = $pros->title;
         $data['xueshengname'] = empty($trips->name)?'':$trips->name;
@@ -60,7 +63,9 @@ class OrderController extends CommonController
         $data['card2'] = empty($trips->card2)?'':$trips->card2;
         $data['guarder'] = empty($guarders->id)?'':$guarders->id;
         $data['trip'] = empty($trips->id)?'':$trips->id;
-
+        $data['proid'] = empty($pros->id)?'':$pros->id;
+        $data['invoice'] = empty($invoice)?'':$invoice;
+        $data['email'] = empty($email)?'':$email;
         DB::beginTransaction();//开启事务
         try {
             $orderid= DB::table('sch_classorder')
@@ -82,7 +87,7 @@ class OrderController extends CommonController
             $order['appid'] = $channel->appid;//应用ID
             $order['mch_id'] = $channel->mchid;//商户号
             $order['nonce_str'] = md5('pzzk2018');//随机字符串
-            $order['body'] = 'pzzk';//商品描述
+            $order['body'] = '世纪明德';//商品描述
             $order['out_trade_no'] = $data['orders'];//商户订单号
             $order['total_fee'] = 3 * 100;//总金额
             $order['spbill_create_ip'] = $ip;//终端IP
@@ -116,10 +121,6 @@ class OrderController extends CommonController
         }else{//不需要支付
             return api_json(['orderid'=>$orderid], 200, '成功');
         }
-
-
-
-
     }
     /**
      *确定订单、支付成功
@@ -134,7 +135,7 @@ class OrderController extends CommonController
             ->where('id', $order_info->channel)
             ->first();
         if($order_info){
-            if($order_info->pay_status == 2){//已支付成功
+            if($order_info->pay_status == 1){//已支付成功
                 return api_json([],200,'支付成功');
             }else{
                 //查询订单支付状态
@@ -153,13 +154,19 @@ class OrderController extends CommonController
                         unset($objectxml['sign']);
                         if($this->sign_do($objectxml,$channel->appsecret) == $sign) {//验证签名
 //                            Log::info('Showing user profile for user: '.$id);
-
                             DB::beginTransaction();
                             try {
+
+                                $class_order['pay_status'] =1;
+                                $class_order['pay_time'] = today_time();
+                                $class_order['transaction_id'] = $objectxml['transaction_id'];
+                                $class_order['total_fee'] = $objectxml['total_fee'];
+                                $class_order['cash_fee'] = $objectxml['cash_fee'];
+                                $class_order['res_json'] = json_encode($objectxml);
                                 //成功修改订单状态
-
-
-
+                                DB::table('sch_classorder')
+                                    ->where('orders',$orderid)
+                                    ->update($class_order);
                                 //提交
                                 DB::commit();
                                 return api_json([],200,'支付成功');
@@ -439,6 +446,33 @@ class OrderController extends CommonController
             return $this->api_json([],500,'未检查到文件');
         }
 
+    }
+    /**
+     *订单列表
+     */
+    public function orderList(Request $request)
+    {
+
+       $status =  $request->input('status');
+
+        $orders = DB::table('sch_classorder')
+            ->select('sch_classorder.id','sch_classorder.orders','sch_classorder.title','sch_classproduct.title_fit','sch_classorder.pay','sch_classorder.created_at','sch_classorder.pay_status','sch_classproduct.image1')
+            ->leftJoin('sch_classproduct','sch_classproduct.id','=','sch_classorder.proid')
+            ->where('sch_classorder.uid',$this->userinfo->id)
+            ->where('sch_classorder.pay_status',$status)
+            ->orderBy('sch_classorder.created_at','desc')
+            ->get();
+
+        if($orders->isEmpty()){
+            $or=[];
+        }else{
+            $or = $orders->toArray();
+            foreach($or as $k=>$v){
+                $or[$k]->img = config('app.app_configs.loadhost').$v->image1;
+            }
+        }
+
+        return $this->api_json($or,200,'订单列表');
     }
 
 }
