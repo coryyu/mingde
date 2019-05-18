@@ -208,6 +208,7 @@ class ClassProductController extends Controller
         $form->editor('text_item','特色');
         $form->editor('text_introduce','课程介绍');
         $form->editor('text_arrange','课程安排');
+        $form->editor('text_service','课程服务');
         $form->tools(function (Form\Tools $tools) {
             // 去掉`列表`按钮
             $tools->disableList();

@@ -41,6 +41,7 @@ Route::group([
     $router->resource('classproduct', ClassProductController::class);
     $router->resource('classrecommend', ClassreCommendController::class);
     $router->resource('classyanxuerecommend', ClassYanxuereCommendController::class);
+    $router->resource('classagreement', ClassAgreementController::class);
 
 });
 
