@@ -98,6 +98,9 @@ Route::group(['prefix'=>'mingde'],function(){
     Route::any('index/indexyanxuerec',['uses'=>'Mingde\IndexController@indexYanxueRec']);//研学推荐
 
     Route::any('index/indexdetail',['uses'=>'Mingde\IndexController@indexDetail']);//商品详情
+    Route::any('index/gethomepage',['uses'=>'Mingde\IndexController@getHomePage']);//商品详情
+    Route::any('index/search',['uses'=>'Mingde\IndexController@search']);//搜索列表
+    Route::any('index/getcitylist',['uses'=>'Mingde\IndexController@getCityList']);//城市
 
     Route::any('order/uploadimg',['uses'=>'Mingde\OrderController@uploadImg']);//上传图片
     Route::any('order/babylist',['uses'=>'Mingde\OrderController@babyList']);//出行人列表
@@ -109,4 +112,6 @@ Route::group(['prefix'=>'mingde'],function(){
     Route::any('order/addorder',['uses'=>'Mingde\OrderController@addOrder']);//
     Route::any('order/isorderok',['uses'=>'Mingde\OrderController@isOrderOk']);//
     Route::any('order/orderlist',['uses'=>'Mingde\OrderController@orderList']);//
+    Route::any('order/orderdetail',['uses'=>'Mingde\OrderController@orderDetail']);//
+    Route::any('order/orderrefund',['uses'=>'Mingde\OrderController@orderRefund']);//
 });

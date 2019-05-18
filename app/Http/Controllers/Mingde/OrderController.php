@@ -237,6 +237,8 @@ class OrderController extends CommonController
         $grade = $request->input('grade');
         $class = $request->input('class');
         $phone = $request->input('phone');
+        $birthday = $request->input('birthday');
+        $size = $request->input('size');
         $nation = $request->input('nation');
         $card = $request->input('card');
         $card1 = $request->input('card1');
@@ -278,6 +280,8 @@ class OrderController extends CommonController
            $data['grade'] = $grade;
            $data['class'] = $class;
            $data['phone'] = $phone;
+           $data['birthday'] = $birthday;
+           $data['size'] = $size;
            $data['nation'] = $nation;
            $data['card'] = $card;
            $data['card1'] = $card1;
@@ -458,7 +462,7 @@ class OrderController extends CommonController
         $orders = DB::table('sch_classorder')
             ->select('sch_classorder.id','sch_classorder.orders','sch_classorder.title','sch_classproduct.title_fit','sch_classorder.pay','sch_classorder.created_at','sch_classorder.pay_status','sch_classproduct.image1')
             ->leftJoin('sch_classproduct','sch_classproduct.id','=','sch_classorder.proid')
-            ->where('sch_classorder.uid',$this->userinfo->id)
+            ->where('sch_classorder.userid',$this->userinfo->id)
             ->where('sch_classorder.pay_status',$status)
             ->orderBy('sch_classorder.created_at','desc')
             ->get();
@@ -474,5 +478,48 @@ class OrderController extends CommonController
 
         return $this->api_json($or,200,'订单列表');
     }
+    /**
+     *订单详情
+     */
+    public function orderDetail(Request $request)
+    {
+        $id = $request->input('id');
 
+        $detail = DB::table('sch_classorder')
+            ->select('sch_classorder.pay_status','sch_classorder.orders','sch_classorder.pay','sch_classorder.created_at','sch_classorder.title','sch_classproduct.start_time','sch_classtrip.name as tname','sch_classtrip.card','sch_classguarder.name as gname','sch_classguarder.phone as gphone','sch_classtrip.phone as tphone','sch_classguarder.relation')
+            ->leftJoin('sch_classproduct','sch_classproduct.id','=','sch_classorder.proid')
+            ->leftJoin('sch_classtrip','sch_classtrip.id','=','sch_classorder.trip')
+            ->leftJoin('sch_classguarder','sch_classguarder.id','=','sch_classorder.guarder')
+            ->where('sch_classorder.id',$id)
+            ->first();
+        $detail ->insurance = '旅游意外险';
+        return $this->api_json($detail,200,'订单详情');
+
+    }
+    /**
+     *申请退款
+     */
+    public function orderRefund(Request $request)
+    {
+        $id = $request->input('id');
+        $tuitext = $request->input('text');
+
+        $order = DB::table('sch_classorder')
+            ->where('id',$id)
+            ->first();
+        if($order-> pay_status == 1){//已支付订单
+
+            $order = DB::table('sch_classorder')
+                ->where('id',$id)
+                ->update(['pay_status'=>2,'tuitext'=>$tuitext,'tui_time'=>today_time()]);
+            if($order){//申请退款成功
+                return $this->api_json([],200,'申请退款成功');
+            }else{
+                return $this->api_json([],500,'申请退款失败');
+            }
+        }else{//未支付 或  已退款
+            return $this->api_json([],500,'未支付订单');
+        }
+
+    }
 }

@@ -85,4 +85,104 @@ class IndexController extends CommonController
         return $this->api_json($pro->toarray(),200,'成功');
     }
 
+
+    /**
+     *首页加载
+     */
+    public function getHomePage(Request $request)
+    {
+
+        $page = (int) $request->input("page");//页码
+        $limit = 15;
+
+
+        $lists = DB::table('sch_classproduct')
+            ->select('sch_classproduct.id','sch_classproduct.title','sch_classproduct.title_fit','sch_classproduct.image1')
+            ->where('is_del',0)
+            ->where('is_show',0)
+            ->where('is_recommend',1)
+            ->orderBy('sort','desc')
+            ->orderBy('created_at','desc')
+            ->offset(($page-1)*$limit)
+            ->limit($limit)
+            ->get();
+
+        if($lists->isEmpty()){
+            $rearray = [];
+        }else{
+            $rearray= $lists->toArray();
+            foreach ($lists as $k=>$v) {
+                $rearray[$k] = $v;
+                $rearray[$k]->image1 = config('app.app_configs.loadhost').$v->image1;
+            }
+        }
+        return $this->api_json($rearray,200,'成功');
+    }
+
+    /**
+     *搜索列表
+     */
+    public function search(Request $request){
+
+        $page = (int) $request->input("page");//页码
+        $limit = 15;
+        $title = $request->input('title');
+        $city = $request->input('city');
+
+
+        $pro = DB::table('sch_classproduct')
+            ->select('sch_classproduct.id','sch_classproduct.title','sch_classproduct.title_fit','sch_classproduct.image1');
+        if(!empty($city)){
+            $pro->where('city','like','%'.$city.'%');
+        }
+        if(!empty($title)){
+            $pro->where('title','like','%'.$title.'%');
+        }
+
+        $lists = $pro->where('is_del',0)
+            ->where('is_show',0)
+            ->orderBy('sort','desc')
+            ->orderBy('created_at','desc')
+            ->offset(($page-1)*$limit)
+            ->limit($limit)
+            ->get();
+
+        if($lists->isEmpty()){
+            $rearray = [];
+        }else{
+            $rearray= $lists->toArray();
+            foreach ($lists as $k=>$v) {
+                $rearray[$k] = $v;
+                $rearray[$k]->image1 = config('app.app_configs.loadhost').$v->image1;
+            }
+        }
+        return $this->api_json($rearray,200,'成功');
+    }
+
+    /**
+     *城市推荐
+     */
+    public function getCityList()
+    {
+
+        $citys = DB::table('sch_classcity')
+            ->select('id','name','type')
+            ->where('is_del',0)
+            ->orderBy('sort','desc')
+            ->orderBy('created_at','desc')
+            ->get()->toArray();
+
+        $city=[];
+
+        foreach($citys as $k=>$v){
+            if($v->type ==1 ){//国内城市
+                $city['guonei'][] = $v;
+            }elseif($v->type ==2) {//国际城市
+                $city['guoji'][] = $v;
+            }
+
+        }
+        return $this->api_json($city,200,'成功');
+    }
+
 }
