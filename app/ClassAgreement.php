@@ -28,6 +28,9 @@ class ClassAgreement extends Authenticatable
     protected $hidden = [
 //        'password',
     ];
+    public $timestamps = false; //关闭 自动更新时间
 
+//    const UPDATED_AT='updated_at';
+//    const CREATED_AT = 'create_at';
 
 }

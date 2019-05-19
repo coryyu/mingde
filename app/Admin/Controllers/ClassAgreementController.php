@@ -124,7 +124,7 @@ class ClassAgreementController extends Controller
     {
         $form = new Form(new ClassAgreement);
 
-        $form->editor('text_service','协议内容')->help('{{username}}代表用户名称');
+        $form->editor('text','协议内容')->help('{{username}}代表用户名称');
 
         $form->tools(function (Form\Tools $tools) {
 

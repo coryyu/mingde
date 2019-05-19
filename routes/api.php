@@ -101,6 +101,7 @@ Route::group(['prefix'=>'mingde'],function(){
     Route::any('index/gethomepage',['uses'=>'Mingde\IndexController@getHomePage']);//商品详情
     Route::any('index/search',['uses'=>'Mingde\IndexController@search']);//搜索列表
     Route::any('index/getcitylist',['uses'=>'Mingde\IndexController@getCityList']);//城市
+    Route::any('index/getagreement',['uses'=>'Mingde\IndexController@getAgreement']);//城市
 
     Route::any('order/uploadimg',['uses'=>'Mingde\OrderController@uploadImg']);//上传图片
     Route::any('order/babylist',['uses'=>'Mingde\OrderController@babyList']);//出行人列表

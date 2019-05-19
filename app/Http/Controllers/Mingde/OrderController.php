@@ -42,8 +42,17 @@ class OrderController extends CommonController
             if(!$guarders){
                 return $this->api_json([],500,'监护人信息错误');
             }
+
+            $ss = DB::table('sch_classorder')
+                ->where('proid',$proid)
+                ->where('trip',$trip)
+                ->first();
+            if(!$ss){
+                $msg = '证件号为：'.$trips->card.'的出行人已经下单该产品，请不要再次下单';
+                return $this->api_json([],500,$msg);
+            }
         }
-        
+
         //订单信息
         $data['userid'] = $this->userinfo->id;
         $data['orders'] = 'Proojk'.$pros->id.date("w").time();

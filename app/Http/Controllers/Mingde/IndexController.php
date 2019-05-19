@@ -184,5 +184,15 @@ class IndexController extends CommonController
         }
         return $this->api_json($city,200,'成功');
     }
+    /**
+     *获取协议
+     */
+    public function getAgreement(Request $request)
+    {
+        $agr = DB::table('sch_classagreement')
+            ->first();
 
+        $text = str_replace("{{username}}",$this->userinfo->id,$agr->text);
+        return $this->api_json($text,200,'成功');
+    }
 }
