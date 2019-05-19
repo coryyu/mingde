@@ -20,8 +20,7 @@ class OrderController extends CommonController
         $proid = $request->input('proid');
         $trip = $request->input('trip');//出行人id
         $guarder = $request->input('guarder');//监护人id
-        $invoice = $request->input('invoice');//0:不需要发票，1需要发票
-            $email = $request->input('email');
+
         $ip = '47.104.158.214';//监护人id
         //商品信息
         $pros = ClassProduct::where('sch_classproduct.id',$proid)
@@ -73,8 +72,8 @@ class OrderController extends CommonController
         $data['guarder'] = empty($guarders->id)?'':$guarders->id;
         $data['trip'] = empty($trips->id)?'':$trips->id;
         $data['proid'] = empty($pros->id)?'':$pros->id;
-        $data['invoice'] = empty($invoice)?'':$invoice;
-        $data['email'] = empty($email)?'':$email;
+        $data['invoice'] = empty($trips->invoice)?'':$trips->invoice;
+        $data['email'] = empty($trips->email)?'':$trips->email;
         DB::beginTransaction();//开启事务
         try {
             $orderid= DB::table('sch_classorder')
@@ -254,6 +253,9 @@ class OrderController extends CommonController
         $card2 = $request->input('card2');
         $healthy = $request->input('healthy');
         $healthytext = $request->input('healthytext');
+        $invoice = $request->input('invoice');
+        $email = $request->input('email');
+        $cardtype = $request->input('cardtype');
 
        if(!empty($id)){//修改
 
@@ -271,6 +273,9 @@ class OrderController extends CommonController
            $data['healthy'] = $healthy;
            $data['healthytext'] = $healthytext;
            $data['updated_at'] = today_time();
+           $data['invoice'] =$invoice;
+           $data['email'] = $email;
+           $data['cardtype'] = $cardtype;
            $update = DB::table('sch_classtrip')
                ->where('id',$id)
                ->update($data);
@@ -300,6 +305,9 @@ class OrderController extends CommonController
            $data['created_at'] = today_time();
            $data['updated_at'] = $data['created_at'];
            $data['is_del'] = 0;
+           $data['invoice'] =$invoice;
+           $data['email'] = $email;
+           $data['cardtype'] = $cardtype;
 
            $insertid =DB::table('sch_classtrip')
                ->insertGetId($data);
@@ -318,7 +326,7 @@ class OrderController extends CommonController
         $proid = $request->input('proid');
 
         $list = DB::table('sch_classtrip')
-            ->select('id','name','sex','card','height','school','grade','class','phone','nation','card','card1','card2','healthy','healthytext')
+            ->select('id','name','sex','card','height','school','grade','class','phone','nation','cardtype','card','card1','card2','healthy','healthytext','invoice','email','size','birthday')
             ->where('proid',$proid)
             ->where('uid',$this->userinfo->id)
             ->where('is_del',0)
@@ -357,12 +365,14 @@ class OrderController extends CommonController
         $phone = $request->input('phone');
         $relation = $request->input('relation');
         $card = $request->input('card');
+        $cardtype= $request->input('cardtype');
 
         if(!empty($id)){//修改
             $data['name'] = $name;
             $data['phone'] = $phone;
             $data['relation'] = $relation;
             $data['card'] = $card;
+            $data['cardtype'] = $cardtype;
             $data['updated_at'] = today_time();
             $update = DB::table('sch_classguarder')
                 ->where('id',$id)
@@ -379,6 +389,7 @@ class OrderController extends CommonController
             $data['phone'] = $phone;
             $data['relation'] = $relation;
             $data['card'] = $card;
+            $data['cardtype'] = $cardtype;
             $data['created_at'] = today_time();
             $data['updated_at'] = $data['created_at'];
             $data['is_del'] = 0;
@@ -400,7 +411,7 @@ class OrderController extends CommonController
         $proid = $request->input('proid');
 
         $list = DB::table('sch_classguarder')
-            ->select('id','name','phone','relation','card')
+            ->select('id','name','phone','relation','card','cardtype')
             ->where('proid',$proid)
             ->where('uid',$this->userinfo->id)
             ->where('is_del',0)
@@ -434,27 +445,32 @@ class OrderController extends CommonController
     public function uploadImg(Request $request){
         if ($request->isMethod('POST')){
             $file = $request->file('img');
-            //判断文件是否上传成功
-            if ($file->isValid()){
-                //原文件名
-                $originalName = $file->getClientOriginalName();
-                //扩展名
-                $ext = $file->getClientOriginalExtension();
-                //MimeType
-                $type = $file->getClientMimeType();
-                //临时绝对路径
-                $realPath = $file->getRealPath();
-                $filename = uniqid().'.'.$ext;
-                $bool = Storage::disk('public')->put($filename,file_get_contents($realPath));
-                //判断是否上传成功
-                if($bool){
-                    return $this->api_json(['filename'=>$filename],200,'上传成功');
+            if($file){
+                //判断文件是否上传成功
+                if ($file->isValid()){
+                    //原文件名
+                    $originalName = $file->getClientOriginalName();
+                    //扩展名
+                    $ext = $file->getClientOriginalExtension();
+                    //MimeType
+                    $type = $file->getClientMimeType();
+                    //临时绝对路径
+                    $realPath = $file->getRealPath();
+                    $filename = uniqid().'.'.$ext;
+                    $bool = Storage::disk('public')->put($filename,file_get_contents($realPath));
+                    //判断是否上传成功
+                    if($bool){
+                        return $this->api_json(['filename'=>$filename],200,'上传成功');
+                    }else{
+                        return $this->api_json([],500,'上传失败');
+                    }
                 }else{
-                    return $this->api_json([],500,'上传失败');
+                    return $this->api_json([],500,'未检查到文件');
                 }
             }else{
                 return $this->api_json([],500,'未检查到文件');
             }
+
         }else{
             return $this->api_json([],500,'未检查到文件');
         }

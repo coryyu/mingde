@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 use App\ClassProduct;
 
+use App\ClassTrip;
+
 class IndexController extends CommonController
 {
 
@@ -66,7 +68,7 @@ class IndexController extends CommonController
     {
         $id = $request->input('id');
 
-        $pro = ClassProduct::select('title','title_fit','price','price','is_onoff','image1','image2','image3','text_item','text_introduce','text_arrange','fit','day','start_time','city','clothing','gradeup','gradedo','is_pay','is_sign','school')
+        $pro = ClassProduct::select('id','title','title_fit','price','price','is_onoff','image1','image2','image3','text_item','text_introduce','text_arrange','fit','day','start_time','city','clothing','gradeup','gradedo','is_pay','is_sign','school')
             ->where('id',$id)->first();
         $grade = DB::table('sch_classgrade')
             ->whereBetween('id', [$pro->gradeup, $pro->gradedo])
@@ -189,10 +191,28 @@ class IndexController extends CommonController
      */
     public function getAgreement(Request $request)
     {
+
+        $trip = $request->input('trip');//出行人id
+        $trips = ClassTrip::where('id',$trip)->first();
+        if(!$trips){
+            return $this->api_json([],500,'出行人信息错误');
+        }
+
         $agr = DB::table('sch_classagreement')
             ->first();
 
-        $text = str_replace("{{username}}",$this->userinfo->id,$agr->text);
+        $text = str_replace("{{username}}",$trips->name,$agr->text);
         return $this->api_json($text,200,'成功');
+    }
+    /**
+     *关于明德
+     */
+    public function aboutMinde()
+    {
+        $text = DB::table('sch_classtext')
+            ->first();
+
+        return $this->api_json($text->text,200,'成功');
+
     }
 }
