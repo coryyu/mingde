@@ -46,10 +46,10 @@ class OrderController extends CommonController
                 ->where('proid',$proid)
                 ->where('trip',$trip)
                 ->first();
-            if(!$ss){
-                $msg = '证件号为：'.$trips->card.'的出行人已经下单该产品，请不要再次下单';
-                return $this->api_json([],500,$msg);
-            }
+//            if(!$ss){
+//                $msg = '证件号为：'.$trips->card.'的出行人已经下单该产品，请不要再次下单';
+//                return $this->api_json([],500,$msg);
+//            }
         }
 
         //订单信息
@@ -72,7 +72,7 @@ class OrderController extends CommonController
         $data['guarder'] = empty($guarders->id)?'':$guarders->id;
         $data['trip'] = empty($trips->id)?'':$trips->id;
         $data['proid'] = empty($pros->id)?'':$pros->id;
-        $data['invoice'] = empty($trips->invoice)?'':$trips->invoice;
+        $data['invoice'] = empty($trips->invoice)?'0':$trips->invoice;
         $data['email'] = empty($trips->email)?'':$trips->email;
         DB::beginTransaction();//开启事务
         try {
